@@ -1,8 +1,8 @@
 module Fib
  
 import Bar
-
 class Int
+
 
 class Bla: Obj
   def fact(x): 
@@ -37,6 +37,7 @@ class Person
 
 class XX
 
+
 class Main
   def to_string: ;
   def main(args):
@@ -46,7 +47,7 @@ class Main
     var y = new Int;
     var x = 3;
     var a = (x) { z + 3 + x };
-    to_string();
+    to_string(); 
     new XX; 
     var x = new nomen/lang/Kernel/Int;
     puts(f.fact(10));

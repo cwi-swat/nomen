@@ -35,13 +35,14 @@ Env declareModule(start[Module] m) = declareModule(m.top);
 
 Env declareModule(Module m) {
   Env env = { <moduleScope(m), \import("<i>"), i@\loc> | (Decl)`import <MId i>` <- m.decls };
-  env += { *declareClass(d) | Decl d <- m.decls, d is class }; 
+  env += { *declareClass(d) | Decl d <- m.decls, d is class };
+  env += { <moduleScope(m), \import(KERNEL), m.name@\loc> | !isKernel(m) }; 
   return env + {<moduleScope(m), \module("<m.name>"), m.name@\loc>};
 }
 
 Env declareClass(d:(Decl)`class <CId c> <Member* ms>`) 
   = {<classScope(d), class("<c>"), c@\loc>}
-  + {<classScope(d), \extend("nomen/lang/Kernel/Obj"), c@\loc>} 
+  + {<classScope(d), \extend("<KERNEL>/Obj"), c@\loc>} 
   + { *declareMethod(classScope(d), m) | m <- ms }; 
 
 Env declareClass(d:(Decl)`class <CId c>: <CId x> <Member* ms>`) 

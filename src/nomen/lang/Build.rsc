@@ -45,12 +45,12 @@ tuple[set[Message], Maybe[Built]] load(MId m, Maybe[start[Module]] maybePt = not
       change = change || mb[0];
       depEnv += { *b.env | just(Built b) := mb[1] };
     }
-    if (path[0] != (MId)`nomen/lang/Kernel`) {
-      tuple[bool, Maybe[Built]] mb = loadRec((MId)`nomen/lang/Kernel`, path);
-      if (just(Built b) := mb[1]) {
-        depEnv += b.env;
-      }
-    }
+    //if (path[0] != (MId)`nomen/lang/Kernel`) {
+    //  tuple[bool, Maybe[Built]] mb = loadRec((MId)`nomen/lang/Kernel`, path);
+    //  if (just(Built b) := mb[1]) {
+    //    depEnv += b.env;
+    //  }
+    //}
     indent -= 2;
     return <change, depEnv>;
   }

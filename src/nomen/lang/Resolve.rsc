@@ -44,7 +44,8 @@ alias Refs = rel[Scope scope, loc use, loc def, str label];
 
 bool isBeforeOrAt(loc x, loc y) = x.offset <= y.offset;
 bool contains(loc x, loc y) 
-  = x.offset <= y.offset && x.length >= y.length + (y.offset - x.offset);
+  = x.path == y.path  
+  && x.offset <= y.offset && x.length >= y.length + (y.offset - x.offset);
 
 
 Refs resolveModule(start[Module] m, Env env) = resolveModule(m.top, env);
@@ -64,7 +65,6 @@ Refs resolveModule(Module m, Env env) {
 
     case (Decl)`class <SId c> <Member* ms>`:
       refs += resolveClass(decl@\loc, (CId)`<SId c>`[@\loc=c@\loc], env)
-            + resolveClass(decl@\loc, (CId)`nomen/lang/Kernel/Obj`, env)
             + resolveMembers(decl@\loc, ms, env);
     }
   }
@@ -83,10 +83,10 @@ Refs resolveImport(loc scope, MId mid, Env env)
 Refs resolveClass(loc scope, x:(CId)`<MId mid>/<SId cls>`, Env env) 
   = { <scope, x@\loc, d, "<mid>/<cls>"> 
      | <Scope moduleScope, \import("<mid>"), _> <- env, contains(moduleScope, scope),
-       <Scope importedScope, \module("<mid>"), _> <- env,  
-       <Scope importedClassScope, class("<cid>"), loc d> <- env, 
-          contains(importedScope, importedClassScope) }
-   when cid := (CId)`<SId cls>`;
+       <Scope importedScope, \module("<mid>"), _> <- env,
+       <Scope importedClassScope, class("<cls>"), loc d> <- env,
+          contains(importedScope, importedClassScope) };
+   
 
 Refs resolveClass(Scope scope, x:(CId)`<SId cls>`, Env env) {
   //println("looking for class <cls> in scope <scope>");
