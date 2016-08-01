@@ -4,6 +4,7 @@ import Fib
 import Bar
 
 
+
 class Fact
 
 class MyFact: Fib/Fact
@@ -29,6 +30,6 @@ class Main
     new Bla; 
     
     puts(x + i);
-    new A; 
+    new A;   
     var p = new Person("Tijs", 34, 1, 2);
     puts(p)

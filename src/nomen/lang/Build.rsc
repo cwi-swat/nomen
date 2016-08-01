@@ -10,17 +10,20 @@ import IO;
 import Message;
 import util::Maybe;
 import ParseTree;
+import util::FileSystem;
+import String;
 
 alias Built = tuple[Env env, Refs refs, start[Module] pt];
 
 set[loc] findModule(MId m, list[loc] searchPath)
-  = { l | exists(l) }
-  when loc l := |project://Nomen/examples/<"<m>">.nomen|;
-
+  = { *find(p, bool(loc l) { return endsWith(l.path, "/<m>.nomen"); }) | p <- searchPath }; 
 
 alias Log = void(str);
 
 void noLog(str x) {}
+
+loc builtFile(loc src) = src[extension="built"];
+  
 
 tuple[set[Message], Maybe[Built]] load(MId m, Maybe[start[Module]] maybePt = nothing(), list[loc] searchPath = [], bool clean = false, Log log = noLog) {
   int indent = 0;
@@ -36,13 +39,17 @@ tuple[set[Message], Maybe[Built]] load(MId m, Maybe[start[Module]] maybePt = not
     Env depEnv = env;
     bool change = false;
     indent += 2;
-    for (<_, \import(str dep), loc def> <- env) {
-      tuple[bool, Maybe[Built]] mb = loadRec(([MId]dep)[@\loc=def], path);
+    imports = [ ([MId]dep)[@\loc=def] | <_, \import(str dep), loc def> <- env ];
+    for (MId dep <- imports) {
+      tuple[bool, Maybe[Built]] mb = loadRec(dep, path);
       change = change || mb[0];
+      depEnv += { *b.env | just(Built b) := mb[1] };
+    }
+    if (path[0] != (MId)`nomen/lang/Kernel`) {
+      tuple[bool, Maybe[Built]] mb = loadRec((MId)`nomen/lang/Kernel`, path);
       if (just(Built b) := mb[1]) {
         depEnv += b.env;
       }
-      //depEnv += { *b.env | just(Built b) := mb };
     }
     indent -= 2;
     return <change, depEnv>;
@@ -70,8 +77,6 @@ tuple[set[Message], Maybe[Built]] load(MId m, Maybe[start[Module]] maybePt = not
     } 
   }
   
-  loc builtFile(loc src) = src[extension="built"];
-  
   bool needsBuild(loc src) 
     = !exists(builtFile(src)) 
     || (lastModified(builtFile(src)) <= lastModified(src))
@@ -81,7 +86,7 @@ tuple[set[Message], Maybe[Built]] load(MId m, Maybe[start[Module]] maybePt = not
     ilog("Loading <m>...");
     
     if (MId cycle <- path, cycle == m) {
-      str cyclePath = "<m>-\> <intercalate("-\>", [ "<d>" | d <- path ])>"; 
+      str cyclePath = "<m>-\><intercalate("-\>", [ "<d>" | d <- path ])>"; 
       ilog("Cycle <cyclePath>");
       msgs += {error("Cyclic import <cyclePath>", cycle@\loc)};
       return <false, nothing()>;
@@ -94,7 +99,7 @@ tuple[set[Message], Maybe[Built]] load(MId m, Maybe[start[Module]] maybePt = not
 	
 	  done[m] = <false, nothing()>; // Base result in case of error
 	
-	  files = findModule(m, searchPath);
+	  set[loc] files = findModule(m, searchPath);
 	  if (files == {}) {
 	    ilog("No file for module <m>");
 	    msgs += {error("Could not find module in search path", m@\loc)};

@@ -1,8 +1,8 @@
 module Bar
+ 
 
 // for some reason, if module is empty, and resolve returns the empty set
 // we lose (Rascal) type information which triggers a runtime type error.
 
 class A
-
 

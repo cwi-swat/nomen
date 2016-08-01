@@ -22,13 +22,15 @@ void setupNomenIDE() {
   registerContributions("Nomen", {
     annotator(start[Module](Tree pt) {
         if (start[Module] m := pt) {
-          <msgs, maybeBuilt> = load(m.top.name, maybePt = just(m), log = println);
+          <msgs, maybeBuilt> = load(m.top.name, maybePt = just(m), searchPath = [
+            |project://Nomen/examples|, |project://Nomen/src|
+          ], log = println);
           iprintln(msgs);
           links = {};
           if (just(Built built) := maybeBuilt) {
             links = built.refs<1,2,3>;
           }
-          return m[@hyperlinks=links][@messages=msgs];
+          return m[@hyperlinks=links]; //[@messages=msgs];
         }
         return pt;
       }),
