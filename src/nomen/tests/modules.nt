@@ -1,0 +1,69 @@
+testing modules
+
+test "no such import" {
+  module X import $error(Y)
+}
+
+test "importing kernel is not needed" {
+  module X
+  import $warning(nomen/lang/Kernel)
+}
+
+test "cyclic import" {
+  module X import Y
+  module Y import $error(X)
+}
+
+test "transitive cyclic import" {
+  module X import Y
+  module Y import Z
+  module Z import $error(X)
+}
+
+test "imports are non-transitive" {
+  module X class Foo
+  module Y import X
+  module Z 
+  import Y
+  class C: $error(Foo)
+}
+
+test "local classes are visible outside their scope" {
+  module X
+  class $def(C)
+  class D
+    def m: new $use(C)
+}
+
+test "qualified names should be imported" {
+  module X class Foo
+  module Y
+  class C: $error(X/Foo)
+}
+
+test "imported classes are visible" {
+  module X class $def(Foo)
+  module Y import X
+  class C: $use(Foo)
+}
+
+test "imported classes are visible with qualified name" {
+  module X class $def(Foo)
+  module Y import X
+  class C: $use(X/Foo)
+}
+
+test "qualified classes bypass local classes" {
+  module X class $def(Foo)
+  module Y import X
+  class Foo: $use(X/Foo)
+}
+
+test "local classes shadow imported classes" {
+  module X class Foo
+  module Y import X
+  class $def(Foo)
+    def m:
+      new $use(Foo)
+}
+

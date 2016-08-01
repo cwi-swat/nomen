@@ -1,0 +1,62 @@
+testing classes
+
+test "no such class in extends" {
+  module X
+  class Foo: $error(Bar)
+}
+
+test "no such class in new" {
+  module X
+  class Foo 
+    def m:
+      new $error(Bar)
+}
+
+test "no such qualified class in extends" {
+  module X
+  class Foo: $error(foo/Bar/Bar)
+}
+
+test "no such qualified class in new" {
+  module X
+  class Foo 
+    def m:
+      new $error(foo/Bar/Bar)
+}
+
+
+test "qualifed class def cannot extend" {
+  module X
+  class Foo
+  class nomen/lang/Kernel/Obj : $error(Foo)
+}
+
+test "self inheritance" {
+  module X
+  class $error(Foo): Foo
+}
+
+test "self inheritance via qualified name" {
+  module X
+  class Foo: $error(X/Foo)
+}
+
+test "transitive cyclic inheritance" {
+  module X
+  class A: B
+  class B: C
+  class C: $error(A)
+}
+
+test "class redeclaration" {
+  module X
+  class C
+  class $error(C)
+}
+
+test "class redeclaration via qualified name" {
+  module X
+  class C
+  class $error(X/C)
+}
+

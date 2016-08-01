@@ -1,0 +1,49 @@
+module Fib
+
+class Int
+
+class Bla: Obj
+  def fact(x):
+   ;
+
+class Fact: Bla
+   def fact(n):
+     if n <= 1 then
+        1 
+     else
+        n * fact(n - 1)
+     end
+     
+   def to_string(x): ;
+   
+class Person
+  def initialize(name, age, x, y):
+    @name = name;
+    @age = age;
+    
+  def fact(n, a, b):    
+    ;
+    
+  def dsl: 
+    self.a(2) a b(1 + 2) f (a){
+      (1 + 2) * 2 * a;
+    }
+    
+  def to_string:
+    "Person(" + @name + "," + @age +")"     
+
+class Main
+  def to_string: ;
+  def main(args):
+    var f = new Fact; 
+    new Str;
+    f.initialize(a, b, c, d);
+    var y = new Int;
+    var x = 3;
+    var a = (x) { z + 3 + x };
+    to_string();
+    new XX;
+    var x = new nomen/lang/Kernel/Int;
+    puts(f.fact(10));
+    var p = new Person("Tijs", x);
+    puts(p)

@@ -1,0 +1,31 @@
+module Foo
+
+import Fib
+
+class Fact
+
+class MyFact: Fib/Fact
+ 
+class Main
+  def main(args):
+    var f = new MyFact;
+    var i = 0;   
+    var argsa = 3;
+    
+    self.main(args);
+    var someClosure = (x) {
+      var x = 3;
+      new Main
+    };
+
+    while i <= 100 do
+      var x = 0;
+      var i = 3; 
+      puts(f.fact(i));
+      i = i + 1 * x*  x;
+    end
+    new Bla; 
+    
+    puts(x + i);
+    var p = new Person("Tijs", 34, 1, 2);
+    puts(p)

@@ -1,0 +1,111 @@
+testing variables
+
+
+test "undeclared variable" {
+  module X 
+  class X
+    def f: $error(x);
+}
+
+test "sequence scopes downwards" {
+  module X
+  class C
+    def f:
+      var x = $error(z) + 1;
+      var z = 3;
+
+}
+
+test "closure scopes don't leak variables" {
+  module X 
+  class X
+    def f:
+      () { var x = 3; }; 
+      $error(x);
+}
+
+test "nested scopes don't leak variables" {
+  module X 
+  class X
+    def f:
+      if true then 
+        var x = 3;
+      end 
+      $error(x);
+}
+
+test "parameters cannot be shadowed" {
+  module X
+  class C
+    def f(x):
+      var $error(x);
+}
+
+test "parameters cannot be shadowed by closure" {
+  module X
+  class C
+    def f(x):
+      ($error(x)) {;}
+}
+
+test "parameters cannot be shadowed in nested scope" {
+  module X
+  class C
+    def f(x):
+      if true then
+        var $error(x);
+      end
+}
+
+test "sequential scope should not shadow" {
+  module X
+  class X
+    def f: 
+      var x = 3;
+      var $error(x) = 3;
+}
+    
+test "nested scopes should not shadow" {
+  module X
+  class X
+    def f: 
+      var x = 3;
+      if x > 3 then
+        var $error(x);
+      end
+} 
+    
+    
+test "closure parameters should not shadow" {
+  module X
+  class X
+    def f: 
+      var x = 3;
+      ($error(x)) { ; }
+} 
+   
+test "nested scopes inherit surroundings variables" {
+  module X
+  class C 
+    def m:
+      var $def(x) = 3;
+      if true then 
+        var y = $use(x) + 1;
+      end
+}   
+   
+test "closures capture surrounding scope" {
+  module X
+  class C
+    def m:
+      var $def(x) = 3;
+      () { $use(x) + 1 }
+}
+
+test "closures capture parameters" {
+   module X
+   class C
+     def m($def(x)):
+       () { $use(x) }
+}
+ 

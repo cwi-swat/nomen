@@ -1,0 +1,24 @@
+testing methods
+
+test "redeclared method" {
+  module X
+  class C 
+    def f: ;
+    def $error(f): ;
+}
+
+test "arity is part of method identity" {
+  module X
+  class C
+    def f: $use(f)(1, 2);
+    def f(x): ;
+    def $def(f)(x, y): ;
+}
+
+test "method call references all defs" {
+   module X
+   class A def $def(f): ;
+   module Y import X
+   class B 
+     def $def(f): self.$use(f);
+}

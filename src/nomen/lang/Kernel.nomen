@@ -1,0 +1,45 @@
+module nomen/lang/Kernel
+
+class Obj 
+  def initialize: ;
+  def ==(other): ;
+  def !=(other): ;
+  def method_missing(sym, args): ;
+  def to_string: ;
+  def puts: ;
+
+
+class Nil: Obj
+
+class Array: Obj
+  def iter: ;
+  
+class Iter: Obj
+  def initialize(has_next, next): ;
+  def has_next: ;
+  def next: ;
+  
+class Bool: Obj
+  def |(other): ;
+  def &(other): ;
+
+class Int: Obj
+  def <=(other): ;
+  def >=(other): ;
+  def >(other): ;
+  def <(other): ;
+  def -(other): ;
+  def +(other): ;
+  def *(other): ;
+  def /(other): ;
+  def %(other): ;
+  
+class Str: Obj
+  def +(other): ;
+  
+class Block: Obj
+  def call(): ;
+  def call(x): ;
+  def call(x, y): ;
+  def call(x, y, z): ;
+  
