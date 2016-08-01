@@ -1,12 +1,14 @@
 module Foo
 
 import Fib
+import Bar
+
 
 class Fact
 
 class MyFact: Fib/Fact
  
-class Main
+class Main 
   def main(args):
     var f = new MyFact;
     var i = 0;   
@@ -27,5 +29,6 @@ class Main
     new Bla; 
     
     puts(x + i);
+    new A; 
     var p = new Person("Tijs", 34, 1, 2);
     puts(p)

@@ -7,7 +7,7 @@ import ParseTree;
 alias Scope = loc;
 
 // TODO: names are strings now, just because binary value IO
-// does not work on concrete syntax values.
+// does not work on (all) concrete syntax values.
 data Entity // todo: record module origin
   = \module(str name) // scope will be module
   | class(str name) // scope will be class
@@ -22,11 +22,11 @@ alias Env = rel[Scope scope, Entity entity, loc def];
   
 public str KERNEL = "nomen/lang/Kernel"; 
 
-loc moduleScope(start[Module] m) = moduleScope(m.top);
-loc moduleScope(Module m) = m@\loc;
-loc classScope(d:(Decl)`class <CId _> <Extends _> <Member* _>`) = d@\loc; 
-loc classScope(d:(Decl)`class <CId _> <Member* _>`) = d@\loc; 
-loc methodScope(Member m) = m@\loc;
+Scope moduleScope(start[Module] m) = moduleScope(m.top);
+Scope moduleScope(Module m) = m@\loc;
+Scope classScope(d:(Decl)`class <CId _> <Extends _> <Member* _>`) = d@\loc; 
+Scope classScope(d:(Decl)`class <CId _> <Member* _>`) = d@\loc; 
+Scope methodScope(Member m) = m@\loc;
 
 bool isKernel(start[Module] m) = isKernel(m.top);
 bool isKernel(Module m) = "<m.name>" == KERNEL;

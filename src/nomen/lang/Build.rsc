@@ -19,41 +19,49 @@ set[loc] findModule(MId m, list[loc] searchPath)
 
 
 alias Log = void(str);
-alias Msg = void(Message);
 
 void noLog(str x) {}
-void noMessages(Message m) {}
 
-tuple[set[Message], Maybe[Built]] load(MId m, list[loc] searchPath, bool clean = false, Log log = noLog, Msg msg = noMessages) {
-  set[Message] msgs = {};
-  map[MId, Maybe[Built]] done = ();
+tuple[set[Message], Maybe[Built]] load(MId m, Maybe[start[Module]] maybePt = nothing(), list[loc] searchPath = [], bool clean = false, Log log = noLog) {
   int indent = 0;
-  
   void ilog(str x) {
     msg = ( "" | it + " " | _ <- [0..indent] ) + x;
     log(msg);
   }
+
+  set[Message] msgs = {};
+  map[MId, tuple[bool, Maybe[Built]]] done = ();
   
   tuple[bool, Env] loadDeps(Env env, list[MId] path) {
-    depEnv = env;
-    change = false;
+    Env depEnv = env;
+    bool change = false;
     indent += 2;
-    for (<_, \import(str dep), _> <- env) {
-      <c, mb> = loadRec([MId]dep, path);
-      change = change || c;
-      depEnv += { *b.env | just(Built b) := mb };
+    for (<_, \import(str dep), loc def> <- env) {
+      tuple[bool, Maybe[Built]] mb = loadRec(([MId]dep)[@\loc=def], path);
+      change = change || mb[0];
+      if (just(Built b) := mb[1]) {
+        depEnv += b.env;
+      }
+      //depEnv += { *b.env | just(Built b) := mb };
     }
     indent -= 2;
     return <change, depEnv>;
   }
+  
+  Built buildPt(MId m, start[Module] pt, list[MId] path) {
+    ilog("Desugaring, declaring and resolving <m>");
+    pt = desugar(pt);
+    Env env = declareModule(pt);        
+    Refs refs = resolveModule(pt, loadDeps(env, [m, *path])[1]);
+    Built built = <env, refs, pt>;
+    return built;  
+  }
    
   Maybe[Built] build(MId m, loc file, list[MId] path) {
-    ilog("Building <file>");
+    ilog("Parsing <file>");
     try {
-      pt = desugar(parse(#start[Module], file));
-  		env = declareModule(pt);        
-      refs = resolveModule(pt, loadDeps(env, [m, *path])[1]);
-      return just(<env, refs, pt>);
+      start[Module] pt = parse(#start[Module], file);
+      return just(buildPt(m, pt, path));
     }
     catch ParseError(loc x): {
       ilog("Parse error for <m> at <x>");
@@ -73,17 +81,18 @@ tuple[set[Message], Maybe[Built]] load(MId m, list[loc] searchPath, bool clean =
     ilog("Loading <m>...");
     
     if (MId cycle <- path, cycle == m) {
-      ilog("Cycle <m>-\>" + intercalate("-\>", [ "<d>" | d <- path ]));
-      msgs += {error("Cyclic import <m>", cycle@\loc)};
+      str cyclePath = "<m>-\> <intercalate("-\>", [ "<d>" | d <- path ])>"; 
+      ilog("Cycle <cyclePath>");
+      msgs += {error("Cyclic import <cyclePath>", cycle@\loc)};
       return <false, nothing()>;
     }
     
     if (m in done) {
       ilog("Already done <m>");
-      return <false, done[m]>;
+      return done[m];
     }
 	
-	  done[m] = nothing(); // to stop at cycles
+	  done[m] = <false, nothing()>; // Base result in case of error
 	
 	  files = findModule(m, searchPath);
 	  if (files == {}) {
@@ -103,27 +112,38 @@ tuple[set[Message], Maybe[Built]] load(MId m, list[loc] searchPath, bool clean =
       if (just(Built b) := build(m, file, path)) {
         ilog("Successful build of <m>, saving built file");
         writeBinaryValueFile(builtFile(file), b);
-        done[m] = just(b);
+        done[m] = <true, just(b)>;
       }
-      return <true, done[m]>;
+      else {
+        done[m] = <true, nothing()>;
+      }
+      return done[m];
     }
 	   
-	  ilog("Built file for <m> is up to date");
-    // env and pt are up to date, but refs might not, because of deps
-    <env, refs, pt> = readBinaryValueFile(#Built, builtFile(file));
-    <depChange, depEnv> = loadDeps(env, [m, *path]);
+	  // env and pt are up to date, but refs might not, because of deps
+    
+    ilog("Built file for <m> is up to date");
+    Built built = readBinaryValueFile(#Built, builtFile(file));
+    <depChange, depEnv> = loadDeps(built.env, [m, *path]);
     if (depChange) {
       ilog("Change in dependencies of <m>");
-      refs = resolveModule(pt, depEnv);
+      Refs refs = resolveModule(built.pt, depEnv);
       ilog("Updating built file for <m>");
-      writeBinaryValueFile(builtFile(file), <env, refs, pt>);
+      built.refs = refs;
+      writeBinaryValueFile(builtFile(file), built);
     }
     else {
       ilog("No change in deps of <m>");
     }
-    done[m] = just(<env, refs, pt>);
-    return <depChange, done[m]>;
+    done[m] = <depChange, just(built)>;
+    return done[m];
 	}
   
-  return <msgs, loadRec(m, [])[1]>;
+  if (just(start[Module] pt) := maybePt) {
+    ilog("Starting from parse tree.");
+    Built built = buildPt(m, pt, []); 
+    return <msgs, just(built)>;
+  }
+  Maybe[Built] mb = loadRec(m, [])[1];
+  return <msgs, mb>;
 }

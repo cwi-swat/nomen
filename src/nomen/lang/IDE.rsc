@@ -7,8 +7,10 @@ import nomen::lang::Resolve;
 import nomen::lang::Check;
 import nomen::lang::Desugar;
 import nomen::lang::Outline;
+import nomen::lang::Build;
 import Message;
 import IO;
+import util::Maybe;
 
 anno rel[loc, loc, str] Tree@hyperlinks; 
 
@@ -17,14 +19,16 @@ void setupNomenIDE() {
     return parse(#start[Module], src, org);
   });
   
-  registerContributions("nomen", {
+  registerContributions("Nomen", {
     annotator(start[Module](Tree pt) {
         if (start[Module] m := pt) {
-          md = desugar(m);
-          env = declareModule2(md, []);
-          refs = resolveModule(md, env);
-          msgs = checkModule(md, refs);
-          return m[@hyperlinks=refs<1,2,3>][@messages=msgs];
+          <msgs, maybeBuilt> = load(m.top.name, maybePt = just(m), log = println);
+          iprintln(msgs);
+          links = {};
+          if (just(Built built) := maybeBuilt) {
+            links = built.refs<1,2,3>;
+          }
+          return m[@hyperlinks=links][@messages=msgs];
         }
         return pt;
       }),

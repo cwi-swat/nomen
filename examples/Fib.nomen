@@ -1,6 +1,9 @@
 module Fib
 
+import Bar
+import Bla 
 class Int
+
 
 class Bla: Obj
   def fact(x):
@@ -16,6 +19,7 @@ class Fact: Bla
      
    def to_string(x): ;
    
+ 
 class Person
   def initialize(name, age, x, y):
     @name = name;
