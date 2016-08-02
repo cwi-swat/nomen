@@ -157,7 +157,7 @@ str compileStm((Stm)`var <Id x>;`, CId cls)
   
 // TODO: if there's reference to x in a scope != current scope, make array.
 str compileStm((Stm)`var <Id x> = <Expr e>;`, CId cls)
-  = "$O <x> = <compileExpr(e, cls)>;";
+  = "$O <x> = $ret = <compileExpr(e, cls)>;";
   
 str compileStm((Stm)`if <Expr e> then <Body b1> else <Body b2> end`, CId cls) 
   = "if ($truth(<compileExpr(e, cls)>)) {

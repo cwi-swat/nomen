@@ -32,7 +32,8 @@ loc javaFile(loc src) = src[extension="java"];
 // TODO: add checking, don't write Java if errors in module
 // or dependencies.
 tuple[set[Message], Maybe[Built]] load(MId m, Maybe[start[Module]] maybePt = nothing(), 
-                       list[loc] searchPath = [], bool clean = false, Log log = noLog) {
+                       list[loc] searchPath = [], bool clean = false, bool compile = false,
+                       Log log = noLog) {
   int indent = 0;
   void ilog(str x) {
     msg = ( "" | it + "  " | _ <- [0..indent] ) + x;

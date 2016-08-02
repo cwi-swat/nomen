@@ -173,7 +173,13 @@ Refs resolveExpr(Scope scope, Expr e, Env env) {
 Refs resolveVar(loc scope, Id x, Env env) 
   = {<scope, x@\loc, d, "<x>"> | <loc aScope, var("<x>"), loc d> <- env , contains(aScope, scope) };
 
-Refs resolveCall(Scope scope, Expr call, Env env) 
+Refs resolveCall(Scope scope, (Expr)`super.<DId d>(<{Expr ","}* es>)`, Env env) {
+  // resolve to
+  // a definition of d in a class (imported or local) extended by the current class (transitively)
+  return {}; 
+}
+
+default Refs resolveCall(Scope scope, Expr call, Env env) 
   = { <scope, u@\loc, d, "<c>/<u>/<a>"> | // link to all definitions 
         <Scope classScope, method("<u>", a), loc d> <- env,
         <classScope, class(str c), _> <- env }

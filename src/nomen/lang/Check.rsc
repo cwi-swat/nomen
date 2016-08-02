@@ -102,7 +102,16 @@ set[Message] checkClass(loc scope, CId c, Refs refs)
 
 default set[Message] checkClass(loc scope, CId c, Refs refs) = {};
 
-set[Message] checkCall(loc scope, Expr call, Refs refs) 
+set[Message] checkCall(loc scope, (Expr)`super.<DId d>(<{Expr ","}* es>)`, Refs refs) {
+  // error if there's no method decl for d in any of the transitive super classes
+  // error("No such super method", l);
+  // find class scope containing scope
+  // find transitive extends,
+  // check that any of those classes defines d
+  return {};
+}
+
+default set[Message] checkCall(loc scope, Expr call, Refs refs) 
   = checkExpr(scope, recv, refs)
   + { *checkExpr(scope, arg, refs) | arg <- es }
   when

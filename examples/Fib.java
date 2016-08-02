@@ -276,10 +276,10 @@ public interface Fib<$O extends Fib<$O>>
     @Override
   public $O main($O args) {
     $O $ret = $nil();
-    $O f = $new($Fib$Fact(), $obj1047 -> { $obj1047.initialize(); return $obj1047; });
+    $O f = $ret = $new($Fib$Fact(), $obj1047 -> { $obj1047.initialize(); return $obj1047; });
     $ret = (($O)Main.this).puts((f).fact($int(10)));
-    $O x = $int(3);
-    $O p = $new($Fib$Person(), $obj603 -> { $obj603.initialize($str("Tijs"), x); return $obj603; });
+    $O x = $ret = $int(3);
+    $O p = $ret = $new($Fib$Person(), $obj603 -> { $obj603.initialize($str("Tijs"), x); return $obj603; });
     $ret = (($O)Main.this).puts(p);
     return $ret;
   }

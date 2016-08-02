@@ -1,8 +1,12 @@
 module Super
 
-class Foo
+import Fib
+
+class Foo: Fact
   def f:
     puts("Foo");
+  def fact(n):
+    super.fact(n)
 
 class Bar: Foo
   def f:
