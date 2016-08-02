@@ -130,8 +130,10 @@ syntax Expr
   | new: "new" CId >> [(] "(" {Expr ","}* ")"
   | new0: "new" CId
   | lit: Lit
-  |  bracket brack: "(" Expr ")"
+  | bracket brack: "(" Expr ")"
   | self: "self"
+  | superSend: "super" "." DId  >> [(] "(" {Expr ","}* ")"
+  | superSendNoArgs: "super" "." DId // sugar
   | send: Expr "." Id  >> [(] "(" {Expr ","}* ")"
   | sendNoArgs: Expr "." Id // sugar
   | selfSend: Id >> [(] "(" {Expr ","}* ")" 
@@ -246,7 +248,7 @@ syntax CId
 keyword Reserved
   = "class" | "module" | "def" | "self" | "true" | "false" | "if" | "while" 
   | "then" | "else" | "end" | "do" | "continue" | "break" | "return"
-  | "nil" | "import" | "default" | "var" | "redef"
+  | "nil" | "import" | "default" | "var" | "super"
   ;
 
 

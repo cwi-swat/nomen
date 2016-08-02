@@ -251,6 +251,9 @@ str compileExpr((Expr)`<Id x> = <Expr e>`, CId cls)
 
 str compileExpr((Expr)`self`, CId cls) = "($O)<cls>.this";
 
+str compileExpr((Expr)`super.<DId d>(<{Expr ","}* es>)`, CId cls)
+  = "super.<mangle(d)>(<intercalate(", ", [ compileExpr(arg, cls) | arg <- es, bprintln("arg: <arg>") ])>)";
+
 default str compileExpr(Expr e, CId cls)
   = "(<compileExpr(r, cls)>).<mangle(d)>(<intercalate(", ", [ compileExpr(arg, cls) | arg <- es, bprintln("arg: <arg>") ])>)"
   when bprintln("e = <e>"),

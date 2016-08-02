@@ -76,6 +76,7 @@ default set[Selector] selectors(Expr e) = {};
 
 // presumes desugaring
 MethodCall destructure((Expr)`<Expr r>.<Id m>(<{Expr ","}* es>)`) = <r, (DId)`<Id m>`[@\loc=m@\loc], es>;
+MethodCall destructure(x:(Expr)`super.<DId d>(<{Expr ","}* es>)`) = <(Expr)`self`/*???*/, d, es>;
   
 MethodCall destructure(x:(Expr)`+<Expr e>`) = <e, (DId)`@+`[@\loc=x@\loc], none()>;
 MethodCall destructure(x:(Expr)`-<Expr e>`) = <e, (DId)`@-`[@\loc=x@\loc], none()>;

@@ -68,4 +68,7 @@ Expr desugar((Expr)`<Expr e1>.<Id m>(<{Expr ","}* es>) <Expr e2>`)
 Expr desugar((Expr)`<Expr e1> <Id m>: <Expr e2>`)
   = (Expr)`<Expr e1>.<Id m>(<Expr e2>)`;
 
+Expr desugar((Expr)`super.<DId d>`)
+  = (Expr)`super.<DId d>()`;
+
 default Expr desugar(Expr e) = e;

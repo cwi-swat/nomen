@@ -1,0 +1,15 @@
+module Super
+
+class Foo
+  def f:
+    puts("Foo");
+
+class Bar: Foo
+  def f:
+    super.f
+    
+class Main
+  def main(args):
+    var bar = new Bar;
+    bar.f
+    
