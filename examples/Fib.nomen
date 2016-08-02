@@ -7,7 +7,7 @@ class Int
 class Bla: Obj
   def fact(x): 
    ;
- 
+   
 class Fact: Bla
    def fact(n):
      if n <= 1 then
@@ -17,6 +17,8 @@ class Fact: Bla
      end
      
    def to_string(x): ;
+
+
 
 
 class Person
@@ -36,7 +38,6 @@ class Person
     "Person(" + @name + "," + @age +")"     
 
 class XX
-
 
 class Main
   def to_string: ;

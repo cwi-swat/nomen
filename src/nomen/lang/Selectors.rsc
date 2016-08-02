@@ -19,6 +19,8 @@ str unquote(str x) {
   return x;
 }
 
+str mangle(str d) = mangle([DId]d);
+
 str mangle((DId)`<Id x>`) = escapeKeywords(unquote("<x>"));
 str mangle((DId)`<Id x>=`) = "_set$<unquote("<x>")>";
 str mangle((DId)`@+`) = "__plus";
@@ -98,6 +100,8 @@ MethodCall destructure(x:(Expr)`<Expr e> | <Expr f>`) = <e, (DId)`&`[@\loc=x@\lo
 MethodCall destructure(x:(Expr)`<Expr e> ~ <Expr f>`) = <e, (DId)`&`[@\loc=x@\loc], single(f)>;
 MethodCall destructure(x:(Expr)`<Expr e>[<Expr f>] = <Expr g>`) = <e, (DId)`[]=`[@\loc=x@\loc], two(f, g)>;
 MethodCall destructure(x:(Expr)`<Expr e>.<Id x>  = <Expr f>`) = <e, (DId)`<Id x>=`[@\loc=x@\loc], single(f)>;
+MethodCall destructure(x:(Expr)`(<Expr e>)`) = destructure(e);
+
 
 bool isMethodCall((Expr)`<Id x>`) = false;
 bool isMethodCall((Expr)`@<Id x>`) = false;

@@ -42,7 +42,7 @@ x -> -> vardecls of x in scope
 
 alias Refs = rel[Scope scope, loc use, loc def, str label];
 
-bool isBeforeOrAt(loc x, loc y) = x.offset <= y.offset;
+bool isBeforeOrAt(loc x, loc y) = x.path == y.path && x.offset <= y.offset;
 bool contains(loc x, loc y) 
   = x.path == y.path  
   && x.offset <= y.offset && x.length >= y.length + (y.offset - x.offset);
@@ -89,12 +89,10 @@ Refs resolveClass(loc scope, x:(CId)`<MId mid>/<SId cls>`, Env env)
    
 
 Refs resolveClass(Scope scope, x:(CId)`<SId cls>`, Env env) {
-  //println("looking for class <cls> in scope <scope>");
   if (<Scope classScope, class("<x>"), loc d> <- env,
       <Scope moduleScope, \module(_), _> <- env,
        contains(moduleScope, classScope),
        contains(moduleScope, scope)) {
-    //println("Found class in my module: <cls>");
     return {<scope, x@\loc, d, "<cls>">};
   }
   return 

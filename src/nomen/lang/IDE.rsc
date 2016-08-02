@@ -28,6 +28,7 @@ void setupNomenIDE() {
           iprintln(msgs);
           links = {};
           if (just(Built built) := maybeBuilt) {
+            iprintln(built.classes);
             links = built.refs<1,2,3>;
           }
           return m[@hyperlinks=links]; //[@messages=msgs];

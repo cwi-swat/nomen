@@ -4,31 +4,37 @@ import nomen::lang::Nomen;
 import nomen::lang::Selectors;
 import nomen::lang::Resolve;
 import nomen::lang::Desugar;
+import nomen::lang::Declare;
 import List;
 import IO;
 import String;
 import ParseTree;
 
-set[str] imports(str importing, Env env) = env.unit - {importing}; 
 
 str mid2java(str x) = replaceAll(x, "/", ".");
 str cid2java(str x) = "$<replaceAll(x, "/", "$")>";
 
+alias Classes = rel[str path, str class];
 
-str compileModule(start[Module] pt) {
-  pt = desugar(pt);
-  env = defs(pt, []);
-  refs = resolve(pt, env);
-  iprintln(refs);
-  return compileModule(pt, env, refs);
-}
 
 
 Refs _REFS = {};
 
 
+//str compileModule(MId m, list[loc] searchPath, Log log = noLog) {
+//  <msgs, mb> = load(m, searchPath = searchPath, log = log);
+//  if (just(Built b) := mb) {
+//    return compileModule(b.pt, b.env, b.refs, b.classes);
+//  }
+//  iprintln(msgs);
+//  return "error";
+//}
+
+//tuple[set[Message], Maybe[Built]] load(MId m, Maybe[start[Module]] maybePt = nothing(), 
+//                       list[loc] searchPath = [], bool clean = false, Log log = noLog) {
+
 // presumes desugared
-str compileModule(start[Module] pt, Env env, Refs refs) {
+str compileModule(start[Module] pt, Env env, Refs refs, Classes classes) {
    Module m = pt.top;
 
    _REFS = refs; // todo: pass down refs.
@@ -39,19 +45,22 @@ str compileModule(start[Module] pt, Env env, Refs refs) {
    <pkg, cls> = decomp(m.name); 
    name = "<m.name>";
    
+   bool hasMain = (<_, class("Main"), _> <- env);
    
-   str fileName = "<m.name>.java";
+   loc file = pt@\loc[extension="java"];
    
    src =  "<pkg == "" ? "" : "package <pkg>;"> 
           '@SuppressWarnings({\"unchecked\", \"unused\"})
-          'public interface <cls>\<$O extends <cls>\<$O\>\> 
-          '   extends <intercalate(", ", [ "<mid2java(i)>\<$O\>" | i <- imports(name, env) ])> {
-          '  <for (<DId d, int arity> <- payload(pt)) {>
+          'public interface <cls>\<$O extends <cls>\<$O\>\>
+          '  <if (<_, \import(_), _> <- env) {> 
+          '   extends <intercalate(", ", [ "<mid2java(i)>\<$O\>" | <_, \import(str i), _> <- env ])>
+          '  <}> {
+          '  <for (selector(str d, int arity) <- env<1>) {>
           '  default $O <mangle(d)>(<intercalate(", ", [ "$O arg<i>" | i <- [0..arity] ])>) {
           '     return method_missing($str(\"<unquote("<d>")>\"), $array(<intercalate(", ", [ "arg<i>" | i <- [0..arity] ])>));
           '  }<}>
           '  
-          '  <for (<i, c, _> <- env) {><i != name ? "@Override" : "">
+          '  <for (<str i, str c> <- classes) {><i != name ? "@Override" : "">
           '  default $O <cid2java("<i>/<c>")>() {
           '    return ($O)new <cid2java("<i>/<c>")>();
           '  } 
@@ -59,7 +68,7 @@ str compileModule(start[Module] pt, Env env, Refs refs) {
 
           '  interface $Self extends <cls>\<$Self\> { }
           '
-          '  <for (<i, c, _> <- env) {>
+          '  <for (<str i, str c> <- classes) {>
           '  class <cid2java("<i>/<c>")> extends <mid2java(i)>.<c>\<$Self\> implements $Self { } 
           '  <}>
           '
@@ -75,10 +84,10 @@ str compileModule(start[Module] pt, Env env, Refs refs) {
 	        '  <}>
           '}";
      
-   if (!endsWith(filename, "Kernel.java")) {
-     // TODO: should not be here.
-     writeFile(|project://Nomen/src/<fileName>|, src);
-   }    
+   //if (!endsWith(file.path, "nomen/lang/Kernel.java")) {
+   //  // TODO: should not be here.
+   //  writeFile(file.top, src);
+   //}    
    return src;       
 }
 
@@ -91,7 +100,7 @@ str compileClass((Decl)`class <CId c>: <CId d> <Member* ms>`, MId mid, Refs refs
   
   super = "";
   l = d@\loc;
-  if (<l, _, str s> <- refs) {
+  if (<_, l, _, str s> <- refs) {
     super = s;
   }
   else {
@@ -269,7 +278,7 @@ str compileExpr(new:(Expr)`new <CId cid>(<{Expr ","}* es>)`, CId cls)
   = "$new(<cid2java(x)>(), <obj> -\> { <obj>.initialize(<intercalate(", ", [ compileExpr(e, cls) | e <- es ])>); return <obj>; })"
   when 
     loc l := cid@\loc, 
-    <l, _, str x> <- _REFS,
+    <_, l, _, str x> <- _REFS,
     str obj := "$obj<new@\loc.offset>";
 
 str compileExpr((Expr)`nil`, CId cls) = "$nil()";

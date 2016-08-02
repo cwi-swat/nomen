@@ -50,7 +50,7 @@ import java.util.Iterator;
  * - live text (?) probes
  * - recaf liberation?
  * - traits (-> interfaces with defaults, needs super disamb)
- * - monkey patching (virtual classes; "open up" classes)
+ * - monkey patching (virtual classes)
  * - macros?
  * - infix alphanumer e.g., x or: y
  * 

@@ -53,6 +53,7 @@ Env declareClass(d:(Decl)`class <CId c>: <CId x> <Member* ms>`)
 
 Env declareMethod(Scope scope, m:(Member)`def <DId d>(<{Id ","}* fs>): <Body b>`) 
   = {<scope, method("<d>", arity(fs)), d@\loc>}
+  + {<scope, selector("<d>", arity(fs)), d@\loc>}
   + declareFormals(methodScope(m), fs) 
   + declareBody(methodScope(m), b);
 
