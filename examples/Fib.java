@@ -2,7 +2,7 @@
 @SuppressWarnings({"unchecked", "unused"})
 public interface Fib<$O extends Fib<$O>>
    
-   extends nomen.lang.Kernel<$O>, Bar<$O>
+   extends Bar<$O>, nomen.lang.Kernel<$O>
    {
   
   default $O main($O arg0) {
@@ -14,8 +14,8 @@ public interface Fib<$O extends Fib<$O>>
   default $O dsl() {
      return method_missing($str("dsl"), $array());
   }
-  default $O puts($O arg0) {
-     return method_missing($str("puts"), $array(arg0));
+  default $O initialize($O arg0, $O arg1) {
+     return method_missing($str("initialize"), $array(arg0, arg1));
   }
   default $O a($O arg0, $O arg1) {
      return method_missing($str("a"), $array(arg0, arg1));
@@ -47,11 +47,11 @@ public interface Fib<$O extends Fib<$O>>
   default $O a($O arg0) {
      return method_missing($str("a"), $array(arg0));
   }
-  default $O initialize($O arg0, $O arg1, $O arg2, $O arg3) {
-     return method_missing($str("initialize"), $array(arg0, arg1, arg2, arg3));
-  }
   default $O f($O arg0) {
      return method_missing($str("f"), $array(arg0));
+  }
+  default $O puts($O arg0) {
+     return method_missing($str("puts"), $array(arg0));
   }
   
   @Override
@@ -177,7 +177,7 @@ public interface Fib<$O extends Fib<$O>>
     
   }
   
-  class Fact<$O extends Fib<$O>> extends Bla<$O> implements Fib<$O> {
+  class Fact<$O extends Fib<$O>> extends Fib.Bla<$O> implements Fib<$O> {
     
   
     public Fact() { 
@@ -216,7 +216,7 @@ public interface Fib<$O extends Fib<$O>>
       
     }
     @Override
-  public $O initialize($O name, $O age, $O x, $O y) {
+  public $O initialize($O name, $O age) {
     $O $ret = $nil();
     $ret = Person.this.name = name;
     $ret = Person.this.age = age;
@@ -276,24 +276,10 @@ public interface Fib<$O extends Fib<$O>>
     @Override
   public $O main($O args) {
     $O $ret = $nil();
-    $O f = $new($Fact(), $obj1047 -> { $obj1047.initialize(); return $obj1047; });
-    $ret = $new($nomen$lang$Kernel$Str(), $obj1047 -> { $obj1047.initialize(); return $obj1047; });
-    $ret = (f).initialize(a, b, c, d);
-    $O y = $new($Int(), $obj1047 -> { $obj1047.initialize(); return $obj1047; });
-    $O x = $int(3);
-    $O a = $block(new nomen.lang.Kernel.Block<$O>() {
-      @Override
-      public $O call($O x) {
-        $O $ret = $nil();
-        $ret = ((z)._plus($int(3)))._plus(x);
-        return $ret;
-      }
-    });
-    $ret = (($O)Main.this).to_string();
-    $ret = $new($XX(), $obj1047 -> { $obj1047.initialize(); return $obj1047; });
-    $O x = $new($nomen$lang$Kernel$Int(), $obj1047 -> { $obj1047.initialize(); return $obj1047; });
+    $O f = $new($Fib$Fact(), $obj1047 -> { $obj1047.initialize(); return $obj1047; });
     $ret = (($O)Main.this).puts((f).fact($int(10)));
-    $O p = $new($Person(), $obj774 -> { $obj774.initialize($str("Tijs"), x); return $obj774; });
+    $O x = $int(3);
+    $O p = $new($Fib$Person(), $obj603 -> { $obj603.initialize($str("Tijs"), x); return $obj603; });
     $ret = (($O)Main.this).puts(p);
     return $ret;
   }

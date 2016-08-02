@@ -27,7 +27,10 @@ void noLog(str x) {}
 loc builtFile(loc src) = src[extension="built"];
 loc javaFile(loc src) = src[extension="java"];
   
-
+// TODO: add boolean param compile=false to not compile when
+// doing annotation
+// TODO: add checking, don't write Java if errors in module
+// or dependencies.
 tuple[set[Message], Maybe[Built]] load(MId m, Maybe[start[Module]] maybePt = nothing(), 
                        list[loc] searchPath = [], bool clean = false, Log log = noLog) {
   int indent = 0;

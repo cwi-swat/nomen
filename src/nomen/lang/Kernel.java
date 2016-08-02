@@ -138,7 +138,6 @@ public interface Kernel<$E extends Kernel<$E>>  {
 	}
 
 	default $E $int(Integer x) {
-		System.out.println("Making int: " + x);
 		Int<$E> n = ((Int<$E>)$nomen$lang$Kernel$Int());
 		n.integer = x;
 		return ($E) n;
@@ -309,6 +308,11 @@ public interface Kernel<$E extends Kernel<$E>>  {
 		return method_missing($str("initialize"), $array(arg1, arg2));
 	}
 
+	default $E initialize($E arg1, $E arg2, $E arg3) {
+		return method_missing($str("initialize"), $array(arg1, arg2, arg3));
+	}
+
+
 	default $E $new($E obj, java.util.function.Function<$E,$E> init) {
 		return init.apply(obj);
 	}
@@ -319,17 +323,6 @@ public interface Kernel<$E extends Kernel<$E>>  {
 		public $E initialize() {
 			return ($E) this;
 		}
-		
-		@Override
-		public $E initialize($E arg1) {
-			return initialize();  // ignore superfluous args
-		}
-
-		@Override
-		public $E initialize($E arg1, $E arg2) {
-			return initialize(arg1); // ignore superfluous args
-		}
-
 		
 		@Override
 		public $E is_a($E klass) {
@@ -492,7 +485,6 @@ public interface Kernel<$E extends Kernel<$E>>  {
 		
 		@Override
 		public $E _leq($E other) {
-			System.out.println("this: " + this + " <= "  + other);
 			return $bool(this.integer <= toi(other));
 		}
 		

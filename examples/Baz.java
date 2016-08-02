@@ -1,28 +1,10 @@
  
 @SuppressWarnings({"unchecked", "unused"})
-public interface Foo<$O extends Foo<$O>>
+public interface Baz<$O extends Baz<$O>>
    
-   extends nomen.lang.Kernel<$O>, Bar<$O>, Fib<$O>
+   extends Foo<$O>, nomen.lang.Kernel<$O>
    {
   
-  default $O _star($O arg0) {
-     return method_missing($str("*"), $array(arg0));
-  }
-  default $O fact($O arg0) {
-     return method_missing($str("fact"), $array(arg0));
-  }
-  default $O _leq($O arg0) {
-     return method_missing($str("<="), $array(arg0));
-  }
-  default $O puts($O arg0) {
-     return method_missing($str("puts"), $array(arg0));
-  }
-  default $O main($O arg0) {
-     return method_missing($str("main"), $array(arg0));
-  }
-  default $O _plus($O arg0) {
-     return method_missing($str("+"), $array(arg0));
-  }
   
   @Override
   default $O $nomen$lang$Kernel$Int() {
@@ -36,7 +18,7 @@ public interface Foo<$O extends Foo<$O>>
   default $O $nomen$lang$Kernel$Iter() {
     return ($O)new $nomen$lang$Kernel$Iter();
   } 
-  
+  @Override
   default $O $Foo$MyFact() {
     return ($O)new $Foo$MyFact();
   } 
@@ -48,7 +30,7 @@ public interface Foo<$O extends Foo<$O>>
   default $O $nomen$lang$Kernel$Array() {
     return ($O)new $nomen$lang$Kernel$Array();
   } 
-  
+  @Override
   default $O $Foo$Fact() {
     return ($O)new $Foo$Fact();
   } 
@@ -60,7 +42,7 @@ public interface Foo<$O extends Foo<$O>>
   default $O $Bar$A() {
     return ($O)new $Bar$A();
   } 
-  
+  @Override
   default $O $Foo$Main() {
     return ($O)new $Foo$Main();
   } 
@@ -98,7 +80,7 @@ public interface Foo<$O extends Foo<$O>>
   } 
   
 
-  interface $Self extends Foo<$Self> { }
+  interface $Self extends Baz<$Self> { }
 
   
   class $nomen$lang$Kernel$Int extends nomen.lang.Kernel.Int<$Self> implements $Self { } 
@@ -139,71 +121,6 @@ public interface Foo<$O extends Foo<$O>>
   
 
   
-  class Fact<$O extends Foo<$O>> extends nomen.lang.Kernel.Obj<$O> implements Foo<$O> {
-    
   
-    public Fact() { 
-      super(); 
-      
-    }
-    
-  }
-  
-  class MyFact<$O extends Foo<$O>> extends Fib.Fact<$O> implements Foo<$O> {
-    
-  
-    public MyFact() { 
-      super(); 
-      
-    }
-    
-  }
-  
-  class Main<$O extends Foo<$O>> extends nomen.lang.Kernel.Obj<$O> implements Foo<$O> {
-    
-  
-    public Main() { 
-      super(); 
-      
-    }
-    @Override
-  public $O main($O args) {
-    $O $ret = $nil();
-    $O f = $new($Foo$MyFact(), $obj1047 -> { $obj1047.initialize(); return $obj1047; });
-    $O i = $int(0);
-    $O argsa = $int(3);
-    $ret = (($O)Main.this).main(args);
-    $O someClosure = $block(new nomen.lang.Kernel.Block<$O>() {
-      @Override
-      public $O call($O x) {
-        $O $ret = $nil();
-        $O x = $int(3);
-        $ret = $new($Foo$Main(), $obj1047 -> { $obj1047.initialize(); return $obj1047; });
-        return $ret;
-      }
-    });
-    while ($truth((i)._leq($int(100)))) {
-      $O x = $int(0);
-      $O i = $int(3);
-      $ret = (($O)Main.this).puts((f).fact(i));
-      $ret = i = (i)._plus((($int(1))._star(x))._star(x));
-    }
-    $ret = $new($Fib$Bla(), $obj1047 -> { $obj1047.initialize(); return $obj1047; });
-    $ret = $new($nomen$lang$Kernel$Int(), $obj1047 -> { $obj1047.initialize(); return $obj1047; });
-    $ret = (($O)Main.this).puts((x)._plus(i));
-    $ret = $new($Bar$A(), $obj1047 -> { $obj1047.initialize(); return $obj1047; });
-    $O p = $new($Fib$Person(), $obj495 -> { $obj495.initialize($str("Tijs"), $int(34), $int(1), $int(2)); return $obj495; });
-    $ret = (($O)Main.this).puts(p);
-    return $ret;
-  }
-    
-  }
-  
-  
-  
-  static void main(String[] args) {
-    Main<$Self> main = new Main<$Self>();
-    main.main(main.$args(args));
-  }
   
 }

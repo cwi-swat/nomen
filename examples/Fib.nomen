@@ -22,7 +22,7 @@ class Fact: Bla
 
 
 class Person
-  def initialize(name, age, x, y):
+  def initialize(name, age):
     @name = name;
     @age = age;
     
@@ -43,14 +43,7 @@ class Main
   def to_string: ;
   def main(args):
     var f = new Fact; 
-    new Str;
-    f.initialize(a, b, c, d);
-    var y = new Int;
-    var x = 3;
-    var a = (x) { z + 3 + x };
-    to_string(); 
-    new XX; 
-    var x = new nomen/lang/Kernel/Int;
     puts(f.fact(10));
+    var x = 3;
     var p = new Person("Tijs", x);
     puts(p)
