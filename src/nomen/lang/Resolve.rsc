@@ -90,10 +90,12 @@ Refs resolveClass(loc scope, x:(CId)`<MId mid>/<SId cls>`, Env env)
 
 Refs resolveClass(Scope scope, x:(CId)`<SId cls>`, Env env) {
   if (<Scope classScope, class("<x>"), loc d> <- env,
-      <Scope moduleScope, \module(_), _> <- env,
+      <Scope moduleScope, \module(str m), _> <- env,
        contains(moduleScope, classScope),
        contains(moduleScope, scope)) {
-    return {<scope, x@\loc, d, "<cls>">};
+       // todo: don't want to depend on label for semantics
+       // need explicit representation of module name
+    return {<scope, x@\loc, d, "<m>/<cls>">}; 
   }
   return 
     { <scope, x@\loc, d, "<imported>/<cls>"> 
