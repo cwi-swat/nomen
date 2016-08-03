@@ -214,6 +214,10 @@ public interface Kernel<$E extends Kernel<$E>>  {
 
 	$E method_missing($E sym, $E args);
 
+	default $E hash() {
+		return method_missing($str("hash"), $array());
+	}
+	
 	default $E _equals($E other) {
 		return method_missing($str("=="), $array(other));
 	}
@@ -347,7 +351,24 @@ public interface Kernel<$E extends Kernel<$E>>  {
 			return $str(this.getClass() + "#" + System.identityHashCode(this));
 		}
 		
-		// To interface with java println.
+		@Override
+		public $E hash() {
+			return $int(System.identityHashCode(this));
+		}
+		
+		public $E _equals($E obj) {
+			return $bool(this == obj);
+		}
+		
+		@Override
+		public $E puts($E obj) {
+			System.out.println(obj);
+			return $nil();
+		}
+		
+		// To interface with java things
+		// NB: these should *never* be overridden in nomen subclasses
+		// (name mangling should avoid this).
 		@Override
 		public String toString() {
 			// todo: error handling.
@@ -355,9 +376,14 @@ public interface Kernel<$E extends Kernel<$E>>  {
 		}
 		
 		@Override
-		public $E puts($E obj) {
-			System.out.println(obj);
-			return $nil();
+		public int hashCode() {
+			// todo: error handling
+			return ((Int<$E>)hash()).integer;
+		}
+		
+		@Override
+		public boolean equals(Object obj) {
+			return $truth(_equals(($E)obj));
 		}
 		
 		

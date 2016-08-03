@@ -109,7 +109,7 @@ syntax DId
 syntax Body
   = Stm* Stm // note: non-empty, because otherwise closure amb with empty map
   | Stm* Expr
-  | ";"
+  | ";" // never empty otherwise block is amb with dict
   ;
 
 syntax Block

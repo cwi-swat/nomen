@@ -1,10 +1,12 @@
 module nomen/lang/Kernel
 
-class Obj 
+class Nothing
+  def method_missing(sym, args): ;
+
+class Obj: Nothing 
   def initialize: ;
   def ==(other): ;
   def !=(other): ;
-  def method_missing(sym, args): ;
   def to_string: ;
   def puts: ;
 
