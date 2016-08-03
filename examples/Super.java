@@ -146,6 +146,10 @@ public interface Super<$O extends Super<$O>>
     $ret = (($O)Foo.this).puts($str("Foo"));
     return $ret;
   }
+    
+    public $O g() {
+      return null;
+    }
     @Override
   public $O fact($O n) {
     $O $ret = $nil();
@@ -165,7 +169,7 @@ public interface Super<$O extends Super<$O>>
     @Override
   public $O f() {
     $O $ret = $nil();
-    $ret = super.f();
+    $ret = super.g();
     return $ret;
   }
     
@@ -181,8 +185,9 @@ public interface Super<$O extends Super<$O>>
     @Override
   public $O main($O args) {
     $O $ret = $nil();
-    $O bar = $ret = $new($Super$Bar(), $obj1047 -> { $obj1047.initialize(); return $obj1047; });
+    $O bar = $ret = $new($Super$Bar(), $obj1045 -> { $obj1045.initialize(); return $obj1045; });
     $ret = (bar).f();
+    $ret = (($O)Main.this).puts((bar).fact($int(10)));
     return $ret;
   }
     

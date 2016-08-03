@@ -1,9 +1,7 @@
  
-@SuppressWarnings({"unchecked", "unused"})
-public interface Baz<$O extends Baz<$O>>
-   
-   extends Foo<$O>, nomen.lang.Kernel<$O>
-   {
+@SuppressWarnings({"unchecked"})
+public interface Baz<$O extends Baz<$O>> 
+   extends Foo<$O>, nomen.lang.Kernel<$O> {
   
   
   @Override

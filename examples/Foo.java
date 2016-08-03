@@ -1,18 +1,22 @@
  
-@SuppressWarnings({"unchecked", "unused"})
-public interface Foo<$O extends Foo<$O>>
-   
-   extends nomen.lang.Kernel<$O>, Bar<$O>, Fib<$O>
-   {
+@SuppressWarnings({"unchecked"})
+public interface Foo<$O extends Foo<$O>> 
+   extends nomen.lang.Kernel<$O>, Bar<$O>, Fib<$O> {
   
   default $O _star($O arg0) {
      return method_missing($str("*"), $array(arg0));
+  }
+  default $O initialize() {
+     return method_missing($str("initialize"), $array());
   }
   default $O fact($O arg0) {
      return method_missing($str("fact"), $array(arg0));
   }
   default $O _leq($O arg0) {
      return method_missing($str("<="), $array(arg0));
+  }
+  default $O initialize($O arg0, $O arg1, $O arg2, $O arg3) {
+     return method_missing($str("initialize"), $array(arg0, arg1, arg2, arg3));
   }
   default $O puts($O arg0) {
      return method_missing($str("puts"), $array(arg0));
@@ -169,30 +173,30 @@ public interface Foo<$O extends Foo<$O>>
     @Override
   public $O main($O args) {
     $O $ret = $nil();
-    $O f = $new($Foo$MyFact(), $obj1047 -> { $obj1047.initialize(); return $obj1047; });
-    $O i = $int(0);
-    $O argsa = $int(3);
+    $O f = $ret = $new($Foo$MyFact(), $obj1045 -> { $obj1045.initialize(); return $obj1045; });
+    $O i = $ret = $int(0);
+    $O argsa = $ret = $int(3);
     $ret = (($O)Main.this).main(args);
-    $O someClosure = $block(new nomen.lang.Kernel.Block<$O>() {
+    $O someClosure = $ret = $block(new nomen.lang.Kernel.Block<$O>() {
       @Override
       public $O call($O x) {
         $O $ret = $nil();
-        $O x = $int(3);
-        $ret = $new($Foo$Main(), $obj1047 -> { $obj1047.initialize(); return $obj1047; });
+        $O x = $ret = $int(3);
+        $ret = $new($Foo$Main(), $obj1045 -> { $obj1045.initialize(); return $obj1045; });
         return $ret;
       }
     });
     while ($truth((i)._leq($int(100)))) {
-      $O x = $int(0);
-      $O i = $int(3);
+      $O x = $ret = $int(0);
+      $O i = $ret = $int(3);
       $ret = (($O)Main.this).puts((f).fact(i));
       $ret = i = (i)._plus((($int(1))._star(x))._star(x));
     }
-    $ret = $new($Fib$Bla(), $obj1047 -> { $obj1047.initialize(); return $obj1047; });
-    $ret = $new($nomen$lang$Kernel$Int(), $obj1047 -> { $obj1047.initialize(); return $obj1047; });
+    $ret = $new($Fib$Bla(), $obj1045 -> { $obj1045.initialize(); return $obj1045; });
+    $ret = $new($nomen$lang$Kernel$Int(), $obj1045 -> { $obj1045.initialize(); return $obj1045; });
     $ret = (($O)Main.this).puts((x)._plus(i));
-    $ret = $new($Bar$A(), $obj1047 -> { $obj1047.initialize(); return $obj1047; });
-    $O p = $new($Fib$Person(), $obj495 -> { $obj495.initialize($str("Tijs"), $int(34), $int(1), $int(2)); return $obj495; });
+    $ret = $new($Bar$A(), $obj1045 -> { $obj1045.initialize(); return $obj1045; });
+    $O p = $ret = $new($Fib$Person(), $obj495 -> { $obj495.initialize($str("Tijs"), $int(34), $int(1), $int(2)); return $obj495; });
     $ret = (($O)Main.this).puts(p);
     return $ret;
   }

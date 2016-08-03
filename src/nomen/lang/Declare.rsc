@@ -96,6 +96,11 @@ Env declareExpr(Scope scope, Expr e) {
   top-down-break visit(e) {
     case (Expr)`(<{Id ","}* fs>){<Body b>}`: 
       env += declareFormals(b@\loc, fs) + declareBody(b@\loc, b);
+    
+    case e:(Expr)`new <CId _>(<{Expr ","}* es>)`:
+      env += {<scope, selector("initialize", arity(es)), e@\loc> }
+          + { *declareExpr(scope, arg) | arg <- es };
+   
     case Expr e => declareSelector(e)
       when isMethodCall(e)
   }
@@ -103,7 +108,9 @@ Env declareExpr(Scope scope, Expr e) {
   return env;
 }
 
-Env  declareSelector(Scope scope, Expr call) 
+// TODO: super.<DId d>(...)
+
+Env declareSelector(Scope scope, Expr call) 
   = {<scope, selector("<u>", arity(es)), u@\loc> }
   + { *declareExpr(scope, arg) | arg <- es }
   + declareExpr(scope, recv) 

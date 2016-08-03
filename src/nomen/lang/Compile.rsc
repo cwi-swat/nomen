@@ -50,11 +50,9 @@ str compileModule(start[Module] pt, Env env, Refs refs, Classes classes) {
    loc file = pt@\loc[extension="java"];
    
    src =  "<pkg == "" ? "" : "package <pkg>;"> 
-          '@SuppressWarnings({\"unchecked\", \"unused\"})
-          'public interface <cls>\<$O extends <cls>\<$O\>\>
-          '  <if (<_, \import(_), _> <- env) {> 
-          '   extends <intercalate(", ", [ "<mid2java(i)>\<$O\>" | <_, \import(str i), _> <- env ])>
-          '  <}> {
+          '@SuppressWarnings({\"unchecked\"})
+          'public interface <cls>\<$O extends <cls>\<$O\>\><if (<_, \import(_), _> <- env) {> 
+          '   extends <intercalate(", ", [ "<mid2java(i)>\<$O\>" | <_, \import(str i), _> <- env ])><}> {
           '  <for (selector(str d, int arity) <- env<1>) {>
           '  default $O <mangle(d)>(<intercalate(", ", [ "$O arg<i>" | i <- [0..arity] ])>) {
           '     return method_missing($str(\"<unquote("<d>")>\"), $array(<intercalate(", ", [ "arg<i>" | i <- [0..arity] ])>));

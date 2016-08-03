@@ -49,6 +49,12 @@ import java.util.Iterator;
  * - asciidoc + code in doc
  * - live text (?) probes
  * - recaf liberation?
+ * - default params + modifier to do recaf
+ *      def stream(n, @alg = new Async(n))
+ *       rule is: a single @param is used as the algebra
+ *       it is desugared to two methods: one without the param
+ *       one with so: stream(n): stream(n, new Async(n))
+ *         and stream(n, alg): alg.blabla 
  * - traits (-> interfaces with defaults, needs super disamb)
  * - monkey patching (virtual classes)
  * - macros?

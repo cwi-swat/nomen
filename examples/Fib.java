@@ -1,9 +1,7 @@
  
-@SuppressWarnings({"unchecked", "unused"})
-public interface Fib<$O extends Fib<$O>>
-   
-   extends Bar<$O>, nomen.lang.Kernel<$O>
-   {
+@SuppressWarnings({"unchecked"})
+public interface Fib<$O extends Fib<$O>> 
+   extends Bar<$O>, nomen.lang.Kernel<$O> {
   
   default $O main($O arg0) {
      return method_missing($str("main"), $array(arg0));
@@ -34,6 +32,9 @@ public interface Fib<$O extends Fib<$O>>
   }
   default $O fact($O arg0, $O arg1, $O arg2) {
      return method_missing($str("fact"), $array(arg0, arg1, arg2));
+  }
+  default $O initialize() {
+     return method_missing($str("initialize"), $array());
   }
   default $O fact($O arg0) {
      return method_missing($str("fact"), $array(arg0));
@@ -276,7 +277,7 @@ public interface Fib<$O extends Fib<$O>>
     @Override
   public $O main($O args) {
     $O $ret = $nil();
-    $O f = $ret = $new($Fib$Fact(), $obj1047 -> { $obj1047.initialize(); return $obj1047; });
+    $O f = $ret = $new($Fib$Fact(), $obj1045 -> { $obj1045.initialize(); return $obj1045; });
     $ret = (($O)Main.this).puts((f).fact($int(10)));
     $O x = $ret = $int(3);
     $O p = $ret = $new($Fib$Person(), $obj603 -> { $obj603.initialize($str("Tijs"), x); return $obj603; });

@@ -15,5 +15,6 @@ class Bar: Foo
 class Main
   def main(args):
     var bar = new Bar;
-    bar.f
+    bar.f;
+    puts(bar.fact(10))
     

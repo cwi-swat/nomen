@@ -16,9 +16,9 @@ Module desugar(Module m) {
   }
 }
 
-// what if c == nomen/lang/Kernel/Obj ????
 Decl desugar(d:(Decl)`class <CId c> <Member* ms>`)
-  = (Decl)`class <CId c>: nomen/lang/Kernel/Obj <Member* ms>`[@\loc=d@\loc];
+  = (Decl)`class <CId c>: nomen/lang/Kernel/Obj <Member* ms>`[@\loc=d@\loc]
+  when c != (CId)`nomen/lang/Kernel/Obj`;
 
 default Decl desugar(Decl d) = d;
 

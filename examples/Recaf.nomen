@@ -1,0 +1,6 @@
+module Recaf
+
+class Alg
+  def 'Expr(e): e
+  def 'Var(block, expr): block.call(expr.call)
+  

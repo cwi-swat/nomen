@@ -1,0 +1,5 @@
+module New
+
+class Foo
+  def f:
+    new Foo(1,2,3,4);
