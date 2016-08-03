@@ -212,9 +212,7 @@ public interface Kernel<$E extends Kernel<$E>>  {
 		return x.isInstance(this);
 	}
 
-	default $E method_missing($E sym, $E args) {
-		throw new RuntimeException("noSuchMethod " + sym + " on " + this + " with arguments " + args);
-	}
+	$E method_missing($E sym, $E args);
 
 	default $E _equals($E other) {
 		return method_missing($str("=="), $array(other));
@@ -323,8 +321,16 @@ public interface Kernel<$E extends Kernel<$E>>  {
 		return init.apply(obj);
 	}
 	
+	// this is the base class if you don't want any standard features
+	class Nothing<$E extends Kernel<$E>> implements Kernel<$E> {
+		@Override
+		public $E method_missing($E sym, $E args) {
+			throw new RuntimeException("noSuchMethod " + sym + " on " + this + " with arguments " + args);
+		}
+	}
+	
 	// TODO: make interface to allow interop with ordinary Java classes.
-	class Obj<$E extends Kernel<$E>> implements Kernel<$E> {
+	class Obj<$E extends Kernel<$E>> extends Nothing<$E> implements Kernel<$E> {
 		@Override
 		public $E initialize() {
 			return ($E) this;
@@ -334,7 +340,6 @@ public interface Kernel<$E extends Kernel<$E>>  {
 		public $E is_a($E klass) {
 			throw new RuntimeException("TODO");
 		}
-		
 		
 		@Override
 		public $E to_string() {
