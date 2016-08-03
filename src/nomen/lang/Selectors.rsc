@@ -54,21 +54,6 @@ alias Selector = tuple[DId sym, int arity];
 
 alias MethodCall = tuple[Expr receiver, DId sym, {Expr ","}* args];
 
-set[Selector] payload(start[Module] m) 
-  = ( {} | it + selectors(d) | /Member d := m )
-  + ( {} | it + selectors(e) | /Expr e := m );
-
-set[Selector] selectors((Member)`def <DId did>(<{Id ","}* ids>): <Body body>`)
-  = {<did, arity(ids)>};
-
-set[Selector] selectors((Expr)`(<{Id ","}* ids>) {<Body b>}`) = {<(DId)`call`, arity(ids)>};
-
-set[Selector] selectors((Expr)`new <CId c>(<{Expr ","}* es>)`) = {<(DId)`initialize`, arity(es)>};
-
-default set[Selector] selectors(Expr e) = {<d, arity(es)>}
-  when isMethodCall(e), <_, DId d, {Expr ","}* es> := destructure(e);
-
-default set[Selector] selectors(Expr e) = {};
 
 {Expr ","}* none() = es when (Expr)`f(<{Expr ","}* es>)` := (Expr)`f()`;
 {Expr ","}* single(Expr e) = es when (Expr)`f(<{Expr ","}* es>)` := (Expr)`f(<Expr e>)`;
@@ -113,6 +98,6 @@ bool isMethodCall((Expr)`<Expr l> || <Expr r>`) = false;
 bool isMethodCall((Expr)`<Expr c> ? <Expr t> : <Expr e>`) = false;
 bool isMethodCall((Expr)`<FId x> = <Expr e>`) = false;
 bool isMethodCall((Expr)`<Id x> = <Expr e>`) = false;
-bool isMethodCall((Expr)`(<Expr e>)`) = false;
+bool isMethodCall((Expr)`(<Expr e>)`) = isMethodCall(e);
 bool isMethodCall((Expr)`<Lit _>`) = false;
 default bool isMethodCall(Expr _) = true;

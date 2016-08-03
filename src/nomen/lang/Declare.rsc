@@ -18,6 +18,7 @@ data Entity // todo: record module origin
   | \extend(str name) // scope will be class
   ;
 
+// TODO: this should rel[scope,loc,entity]
 alias Env = rel[Scope scope, Entity entity, loc def];
   
 public str KERNEL = "nomen/lang/Kernel"; 
@@ -47,7 +48,7 @@ Env declareClass(d:(Decl)`class <CId c> <Member* ms>`)
 
 Env declareClass(d:(Decl)`class <CId c>: <CId x> <Member* ms>`) 
   = {<classScope(d), class("<c>"), c@\loc>}
-  + {<classScope(d), \extend("<x>"), x@\loc>} // todo: qualification 
+  + {<classScope(d), \extend("<x>"), x@\loc>}
   + { *declareMethod(classScope(d), m) | m <- ms }; 
 
 
