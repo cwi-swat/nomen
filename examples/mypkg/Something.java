@@ -1,6 +1,6 @@
- 
+package mypkg; 
 @SuppressWarnings({"unchecked"})
-public interface Bar<$O extends Bar<$O>> 
+public interface Something<$O extends Something<$O>> 
    extends nomen.lang.Kernel<$O> {
   
   
@@ -16,6 +16,10 @@ public interface Bar<$O extends Bar<$O>>
   default $O $nomen$lang$Kernel$Nil() {
     return ($O)new $nomen$lang$Kernel$Nil();
   } 
+  
+  default $O $mypkg$Something$Bla() {
+    return ($O)new $mypkg$Something$Bla();
+  } 
   @Override
   default $O $nomen$lang$Kernel$Array() {
     return ($O)new $nomen$lang$Kernel$Array();
@@ -27,10 +31,6 @@ public interface Bar<$O extends Bar<$O>>
   @Override
   default $O $nomen$lang$Kernel$Str() {
     return ($O)new $nomen$lang$Kernel$Str();
-  } 
-  
-  default $O $Bar$A() {
-    return ($O)new $Bar$A();
   } 
   @Override
   default $O $nomen$lang$Kernel$Bool() {
@@ -46,7 +46,7 @@ public interface Bar<$O extends Bar<$O>>
   } 
   
 
-  interface $Self extends Bar<$Self> { }
+  interface $Self extends Something<$Self> { }
 
   
   class $nomen$lang$Kernel$Int extends nomen.lang.Kernel.Int<$Self> implements $Self { } 
@@ -55,13 +55,13 @@ public interface Bar<$O extends Bar<$O>>
   
   class $nomen$lang$Kernel$Nil extends nomen.lang.Kernel.Nil<$Self> implements $Self { } 
   
+  class $mypkg$Something$Bla extends mypkg.Something.Bla<$Self> implements $Self { } 
+  
   class $nomen$lang$Kernel$Array extends nomen.lang.Kernel.Array<$Self> implements $Self { } 
   
   class $nomen$lang$Kernel$Block extends nomen.lang.Kernel.Block<$Self> implements $Self { } 
   
   class $nomen$lang$Kernel$Str extends nomen.lang.Kernel.Str<$Self> implements $Self { } 
-  
-  class $Bar$A extends Bar.A<$Self> implements $Self { } 
   
   class $nomen$lang$Kernel$Bool extends nomen.lang.Kernel.Bool<$Self> implements $Self { } 
   
@@ -71,17 +71,15 @@ public interface Bar<$O extends Bar<$O>>
   
 
   
-  class A<$O extends Bar<$O>> extends nomen.lang.Kernel.Obj<$O> implements Bar<$O> {
+  class Bla<$O extends mypkg.Something<$O>> extends nomen.lang.Kernel.Obj<$O> implements mypkg.Something<$O> {
     
   
-    public A() { 
+    public Bla() { 
       super(); 
       
     }
     
   }
-  
-  
   
   
   

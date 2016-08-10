@@ -162,6 +162,14 @@ Refs resolveExpr(Scope scope, Expr e, Env env) {
     case (Expr)`new <CId c>(<{Expr ","}* args>)`:
       refs += resolveClass(scope, c, env)
            + {*resolveExpr(scope, a, env) | a <- args}; 
+
+    case (Expr)`new <CId c>(<{Expr ","}* args>) {<Member* ms>}`:
+      refs += resolveClass(scope, c, env)
+           + {*resolveExpr(scope, a, env) | a <- args}
+           + resolveMembers(scope, ms, env); 
+
+    case (Expr)`new {<Member* ms>}`:
+      refs += resolveMembers(scope, ms, env); 
     
     case Expr exp => resolveCall(exp)
       when isMethodCall(e)

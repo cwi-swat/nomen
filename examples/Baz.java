@@ -13,10 +13,6 @@ public interface Baz<$O extends Baz<$O>>
     return ($O)new $Fib$Main();
   } 
   @Override
-  default $O $nomen$lang$Kernel$Iter() {
-    return ($O)new $nomen$lang$Kernel$Iter();
-  } 
-  @Override
   default $O $Foo$MyFact() {
     return ($O)new $Foo$MyFact();
   } 
@@ -61,6 +57,14 @@ public interface Baz<$O extends Baz<$O>>
     return ($O)new $Fib$Person();
   } 
   @Override
+  default $O $nomen$lang$Kernel$Iter() {
+    return ($O)new $nomen$lang$Kernel$Iter();
+  } 
+  @Override
+  default $O $nomen$lang$Kernel$Nihil() {
+    return ($O)new $nomen$lang$Kernel$Nihil();
+  } 
+  @Override
   default $O $Fib$Fact() {
     return ($O)new $Fib$Fact();
   } 
@@ -85,8 +89,6 @@ public interface Baz<$O extends Baz<$O>>
   
   class $Fib$Main extends Fib.Main<$Self> implements $Self { } 
   
-  class $nomen$lang$Kernel$Iter extends nomen.lang.Kernel.Iter<$Self> implements $Self { } 
-  
   class $Foo$MyFact extends Foo.MyFact<$Self> implements $Self { } 
   
   class $nomen$lang$Kernel$Nil extends nomen.lang.Kernel.Nil<$Self> implements $Self { } 
@@ -109,6 +111,10 @@ public interface Baz<$O extends Baz<$O>>
   
   class $Fib$Person extends Fib.Person<$Self> implements $Self { } 
   
+  class $nomen$lang$Kernel$Iter extends nomen.lang.Kernel.Iter<$Self> implements $Self { } 
+  
+  class $nomen$lang$Kernel$Nihil extends nomen.lang.Kernel.Nihil<$Self> implements $Self { } 
+  
   class $Fib$Fact extends Fib.Fact<$Self> implements $Self { } 
   
   class $nomen$lang$Kernel$Obj extends nomen.lang.Kernel.Obj<$Self> implements $Self { } 
@@ -118,6 +124,8 @@ public interface Baz<$O extends Baz<$O>>
   class $Fib$Int extends Fib.Int<$Self> implements $Self { } 
   
 
+  
+  
   
   
   

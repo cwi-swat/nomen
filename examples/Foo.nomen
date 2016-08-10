@@ -14,7 +14,6 @@ class Main
     var i = 0;   
     var argsa = 3;
      
-    
     self.main(args);
     var someClosure = (x) {
       var x = 3;

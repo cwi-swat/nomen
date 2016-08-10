@@ -1,4 +1,3 @@
 module Baz
 
-
 import Foo

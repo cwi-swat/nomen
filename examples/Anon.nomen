@@ -1,0 +1,15 @@
+module Anon
+
+class Bla
+  def f:
+    var y = new { def g: 1 + 2 };
+    var x = new Bla { def g: "overridden " + super.g };
+    puts("y.g = " + y.g);
+    puts("x.g = " + x.g);
+ def g:
+   "bla"
+    
+class Main
+  def main(args):
+    var b = new Bla;
+    b.f

@@ -3,6 +3,7 @@ module nomen::lang::Declare
 import nomen::lang::Nomen;
 import nomen::lang::Selectors;
 import ParseTree;
+import String;
 
 alias Scope = loc;
 
@@ -101,6 +102,15 @@ Env declareExpr(Scope scope, Expr e) {
     case e:(Expr)`new <CId _>(<{Expr ","}* es>)`:
       env += {<scope, selector("initialize", arity(es)), e@\loc> }
           + { *declareExpr(scope, arg) | arg <- es };
+
+    case e:(Expr)`new <CId c>(<{Expr ","}* es>) { <Member* ms> }`:
+      env += {<scope, selector("initialize", arity(es)), e@\loc> }
+          + { *declareExpr(scope, arg) | arg <- es }
+          + { *declareMethod(e@\loc, m) | m <- ms };
+
+    case e:(Expr)`new { <Member* ms> }`:
+      env += {<scope, selector("initialize", 0), e@\loc> }
+          + { *declareMethod(e@\loc, m) | m <- ms };
    
     case Expr e => declareSelector(e)
       when isMethodCall(e)
@@ -108,6 +118,8 @@ Env declareExpr(Scope scope, Expr e) {
   
   return env;
 }
+
+str anonymous(loc x) = "Anon<replaceAll(replaceAll(x.path, "/", "_"), ".", "_")>_<x.offset>";
 
 // TODO: super.<DId d>(...)
 

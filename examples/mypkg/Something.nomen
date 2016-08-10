@@ -1,0 +1,3 @@
+module mypkg/Something
+
+class Bla

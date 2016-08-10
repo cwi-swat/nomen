@@ -128,7 +128,10 @@ syntax Expr
   = var: Id
   | field: FId
   | new: "new" CId >> [(] "(" {Expr ","}* ")"
-  | new0: "new" CId
+  | new0: "new" CId // sugar
+  | newAnonObj: "new" "{" Member* members "}"
+  | newAnon0: "new" CId "{" Member* members "}"
+  | newAnon: "new" CId >> [(] "(" {Expr ","}* ")" "{" Member* members "}"
   | lit: Lit
   | bracket brack: "(" Expr ")"
   | self: "self"

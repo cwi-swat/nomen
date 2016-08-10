@@ -71,4 +71,7 @@ Expr desugar((Expr)`<Expr e1> <Id m>: <Expr e2>`)
 Expr desugar((Expr)`super.<DId d>`)
   = (Expr)`super.<DId d>()`;
 
+Expr desugar(e:(Expr)`new <CId c> { <Member* ms> }`)
+  = (Expr)`new <CId c>() { <Member* ms> }`[@\loc=e@\loc];
+
 default Expr desugar(Expr e) = e;

@@ -1,7 +1,7 @@
  
 @SuppressWarnings({"unchecked"})
-public interface Bar<$O extends Bar<$O>> 
-   extends nomen.lang.Kernel<$O> {
+public interface Bar2<$O extends Bar2<$O>> 
+   extends Bar<$O>, nomen.lang.Kernel<$O> {
   
   
   @Override
@@ -20,6 +20,10 @@ public interface Bar<$O extends Bar<$O>>
   default $O $nomen$lang$Kernel$Array() {
     return ($O)new $nomen$lang$Kernel$Array();
   } 
+  
+  default $O $Bar2$A() {
+    return ($O)new $Bar2$A();
+  } 
   @Override
   default $O $nomen$lang$Kernel$Block() {
     return ($O)new $nomen$lang$Kernel$Block();
@@ -28,7 +32,7 @@ public interface Bar<$O extends Bar<$O>>
   default $O $nomen$lang$Kernel$Str() {
     return ($O)new $nomen$lang$Kernel$Str();
   } 
-  
+  @Override
   default $O $Bar$A() {
     return ($O)new $Bar$A();
   } 
@@ -46,7 +50,7 @@ public interface Bar<$O extends Bar<$O>>
   } 
   
 
-  interface $Self extends Bar<$Self> { }
+  interface $Self extends Bar2<$Self> { }
 
   
   class $nomen$lang$Kernel$Int extends nomen.lang.Kernel.Int<$Self> implements $Self { } 
@@ -56,6 +60,8 @@ public interface Bar<$O extends Bar<$O>>
   class $nomen$lang$Kernel$Nil extends nomen.lang.Kernel.Nil<$Self> implements $Self { } 
   
   class $nomen$lang$Kernel$Array extends nomen.lang.Kernel.Array<$Self> implements $Self { } 
+  
+  class $Bar2$A extends Bar2.A<$Self> implements $Self { } 
   
   class $nomen$lang$Kernel$Block extends nomen.lang.Kernel.Block<$Self> implements $Self { } 
   
@@ -71,7 +77,7 @@ public interface Bar<$O extends Bar<$O>>
   
 
   
-  class A<$O extends Bar<$O>> extends nomen.lang.Kernel.Obj<$O> implements Bar<$O> {
+  class A<$O extends Bar2<$O>> extends nomen.lang.Kernel.Obj<$O> implements Bar2<$O> {
     
   
     public A() { 

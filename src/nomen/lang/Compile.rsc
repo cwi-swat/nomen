@@ -74,6 +74,10 @@ str compileModule(start[Module] pt, Env env, Refs refs, Classes classes) {
           '  <compileClass(d, m.name, refs)>
           '  <}>
           '  
+          '  <for (/Expr e := m, isAnonNew(e)) {>
+          '  <compileAnonClass(e, m.name, refs)>
+          '  <}>
+          '  
           '  <if (Decl d <- m.decls, d has name, d.name == (CId)`Main`) {>
           '  static void main(String[] args) {
           '    Main\<$Self\> main = new Main\<$Self\>();
@@ -88,6 +92,10 @@ str compileModule(start[Module] pt, Env env, Refs refs, Classes classes) {
    //}    
    return src;       
 }
+
+bool isAnonNew((Expr)`new {<Member* ms>}`) = true;
+bool isAnonNew((Expr)`new <CId _>(<{Expr ","}* _>) {<Member* ms>}`) = true;
+default bool isAnonNew(Expr _) = false;
 
 str compileClass((Decl)`class <CId c> <Member* ms>`, MId mid, Refs refs) 
   = compileClass((Decl)`class <CId c>: <CId d> <Member* ms>`, mid, refs)
@@ -119,6 +127,15 @@ str compileClass((Decl)`class <CId c>: <CId d> <Member* ms>`, MId mid, Refs refs
          '  <}>
          '}"; 
 }
+
+str compileAnonClass(e:(Expr)`new {<Member* ms>}`, MId mid, Refs refs)  
+  = compileClass((Decl)`class <CId anon> <Member* ms>`, mid, refs)
+  when anon := [CId]anonymous(e@\loc);
+
+str compileAnonClass(e:(Expr)`new <CId c>(<{Expr ","}* es>) {<Member* ms>}`, MId mid, Refs refs)  
+  = compileClass((Decl)`class <CId anon>: <CId c> <Member* ms>`, mid, refs)
+  when anon := [CId]anonymous(e@\loc);
+  
 
 str compileMethod(MId mid, CId cls, (Member)`def <DId d>: <Body b>`)
   = compileMethod(mid, cls, (Member)`def <DId d>(): <Body b>`);
@@ -275,11 +292,26 @@ str mid2methodName((MId)`<{PId "/"}+ path>/<SId x>`)
   = "$<intercalate("$", [ "<p>" | p <- path ])><x>";
 
 // todo: dots
+// TODO: factor out duplication
 str compileExpr(new:(Expr)`new <CId cid>(<{Expr ","}* es>)`, CId cls) 
   = "$new(<cid2java(x)>(), <obj> -\> { <obj>.initialize(<intercalate(", ", [ compileExpr(e, cls) | e <- es ])>); return <obj>; })"
   when 
     loc l := cid@\loc, 
     <_, l, _, str x> <- _REFS,
+    str obj := "$obj<new@\loc.offset>";
+
+// For anon classes call new directly, since it's always module local
+str compileExpr(new:(Expr)`new { <Member* ms> }`, CId cls)
+  = "$new(($O)new <a>\<\>(), <obj> -\> { <obj>.initialize(); return <obj>; })"
+  when 
+    str a := anonymous(new@\loc),
+    str obj := "$obj<new@\loc.offset>";
+
+str compileExpr(new:(Expr)`new <CId cid>(<{Expr ","}* es>) { <Member* ms> }`, CId cls) 
+  = "$new(($O)new <a>\<\>(), <obj> -\> { <obj>.initialize(<intercalate(", ", [ compileExpr(e, cls) | e <- es ])>); return <obj>; })"
+  when 
+    loc l := cid@\loc, 
+    str a := anonymous(new@\loc),
     str obj := "$obj<new@\loc.offset>";
 
 str compileExpr((Expr)`nil`, CId cls) = "$nil()";

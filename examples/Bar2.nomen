@@ -1,0 +1,5 @@
+module Bar2
+
+import Bar
+
+class A

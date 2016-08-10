@@ -1,7 +1,7 @@
  
 @SuppressWarnings({"unchecked"})
 public interface Fib<$O extends Fib<$O>> 
-   extends Bar<$O>, nomen.lang.Kernel<$O> {
+   extends nomen.lang.Kernel<$O>, Bar<$O> {
   
   default $O main($O arg0) {
      return method_missing($str("main"), $array(arg0));
@@ -64,10 +64,6 @@ public interface Fib<$O extends Fib<$O>>
     return ($O)new $Fib$Main();
   } 
   @Override
-  default $O $nomen$lang$Kernel$Iter() {
-    return ($O)new $nomen$lang$Kernel$Iter();
-  } 
-  @Override
   default $O $nomen$lang$Kernel$Nil() {
     return ($O)new $nomen$lang$Kernel$Nil();
   } 
@@ -99,6 +95,14 @@ public interface Fib<$O extends Fib<$O>>
   default $O $Fib$Person() {
     return ($O)new $Fib$Person();
   } 
+  @Override
+  default $O $nomen$lang$Kernel$Iter() {
+    return ($O)new $nomen$lang$Kernel$Iter();
+  } 
+  @Override
+  default $O $nomen$lang$Kernel$Nihil() {
+    return ($O)new $nomen$lang$Kernel$Nihil();
+  } 
   
   default $O $Fib$Fact() {
     return ($O)new $Fib$Fact();
@@ -124,8 +128,6 @@ public interface Fib<$O extends Fib<$O>>
   
   class $Fib$Main extends Fib.Main<$Self> implements $Self { } 
   
-  class $nomen$lang$Kernel$Iter extends nomen.lang.Kernel.Iter<$Self> implements $Self { } 
-  
   class $nomen$lang$Kernel$Nil extends nomen.lang.Kernel.Nil<$Self> implements $Self { } 
   
   class $nomen$lang$Kernel$Array extends nomen.lang.Kernel.Array<$Self> implements $Self { } 
@@ -141,6 +143,10 @@ public interface Fib<$O extends Fib<$O>>
   class $Fib$Bla extends Fib.Bla<$Self> implements $Self { } 
   
   class $Fib$Person extends Fib.Person<$Self> implements $Self { } 
+  
+  class $nomen$lang$Kernel$Iter extends nomen.lang.Kernel.Iter<$Self> implements $Self { } 
+  
+  class $nomen$lang$Kernel$Nihil extends nomen.lang.Kernel.Nihil<$Self> implements $Self { } 
   
   class $Fib$Fact extends Fib.Fact<$Self> implements $Self { } 
   
@@ -280,12 +286,14 @@ public interface Fib<$O extends Fib<$O>>
     $O f = $ret = $new($Fib$Fact(), $obj1045 -> { $obj1045.initialize(); return $obj1045; });
     $ret = (($O)Main.this).puts((f).fact($int(10)));
     $O x = $ret = $int(3);
-    $O p = $ret = $new($Fib$Person(), $obj603 -> { $obj603.initialize($str("Tijs"), x); return $obj603; });
+    $O p = $ret = $new($Fib$Person(), $obj601 -> { $obj601.initialize($str("Tijs"), x); return $obj601; });
     $ret = (($O)Main.this).puts(p);
     return $ret;
   }
     
   }
+  
+  
   
   
   

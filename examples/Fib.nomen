@@ -19,8 +19,6 @@ class Fact: Bla
    def to_string(x): ;
 
 
-
-
 class Person
   def initialize(name, age):
     @name = name;
