@@ -37,7 +37,7 @@ class Person
 
 class XX
 
-class Main
+class Main2
   def to_string: ;
   def main(args):
     var f = new Fact; 

@@ -58,18 +58,6 @@ str compileModule(start[Module] pt, Env env, Refs refs, Classes classes) {
           '     return method_missing($str(\"<unquote("<d>")>\"), $array(<intercalate(", ", [ "arg<i>" | i <- [0..arity] ])>));
           '  }<}>
           '  
-          '  <for (<str i, str c> <- classes) {><i != name ? "@Override" : "">
-          '  default $O <cid2java("<i>/<c>")>() {
-          '    return ($O)new <cid2java("<i>/<c>")>();
-          '  } 
-          '  <}>
-
-          '  interface $Self extends <cls>\<$Self\> { }
-          '
-          '  <for (<str i, str c> <- classes) {>
-          '  class <cid2java("<i>/<c>")> extends <mid2java(i)>.<c>\<$Self\> implements $Self { } 
-          '  <}>
-          '
           '  <for (Decl d <- m.decls, d has members) {>
           '  <compileClass(d, m.name, refs)>
           '  <}>
@@ -79,10 +67,24 @@ str compileModule(start[Module] pt, Env env, Refs refs, Classes classes) {
           '  <}>
           '  
           '  <if (Decl d <- m.decls, d has name, d.name == (CId)`Main`) {>
-          '  static void main(String[] args) {
-          '    Main\<$Self\> main = new Main\<$Self\>();
-          '    main.main(main.$args(args));
-	        '  }
+          '    interface $Self extends <cls>\<$Self\> { }
+          '    <for (<str i, str c> <- classes) {>
+          '    <i != name ? "@Override" : "">
+          '    default $O <cid2java("<i>/<c>")>() {
+          '      return ($O)new <cid2java("<i>/<c>")>();
+          '    }
+          '    <}> 
+          '    <for (<str i, str c> <- classes) {>
+          '    class <cid2java("<i>/<c>")> extends <mid2java(i)>.<c>\<$Self\> implements $Self { } 
+          '    <}>
+          '    static void main(String[] args) {
+          '      Main\<$Self\> main = new Main\<$Self\>() {};
+          '      main.main(main.$args(args));
+	        '    }
+	        '  <} else {>
+	        '    <for (<name, str c> <- classes) {>
+          '  $O <cid2java("<name>/<c>")>();
+          '    <}>
 	        '  <}>
           '}";
      
@@ -110,7 +112,7 @@ str compileClass((Decl)`class <CId c>: <CId d> <Member* ms>`, MId mid, Refs refs
   } 
   
   
-  return "class <c>\<$O extends <mid2java("<mid>")>\<$O\>\> extends <mid2java(super)>\<$O\> implements <mid2java("<mid>")>\<$O\> {
+  return "abstract class <c>\<$O extends <mid2java("<mid>")>\<$O\>\> extends <mid2java(super)>\<$O\> implements <mid2java("<mid>")>\<$O\> {
          '  <for (x <- flds) {>protected $O <x>;
          '  <}>
          '
