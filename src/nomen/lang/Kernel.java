@@ -67,40 +67,45 @@ import java.util.Iterator;
  * 
  */
 
+@SuppressWarnings("unchecked")
 public interface Kernel<$E extends Kernel<$E>>  {
 
   default $E $nomen$lang$Kernel$Int() {
-    return ($E)new Int();
+    return ($E)new Int<>();
   } 
   
   default $E $nomen$lang$Kernel$Iter() {
-    return ($E)new Iter();
+    return ($E)new Iter<>();
   } 
   
   default $E $nomen$lang$Kernel$Block() {
-    return ($E)new Block();
+    return ($E)new Block<>();
   } 
   
   default $E $nomen$lang$Kernel$Nil() {
-    return ($E)new Nil();
+    return ($E)new Nil<>();
   } 
   
   default $E $nomen$lang$Kernel$Str() {
-    return ($E)new Str();
+    return ($E)new Str<>();
   } 
   
   default $E $nomen$lang$Kernel$Bool() {
-    return ($E)new Bool();
+    return ($E)new Bool<>();
   } 
   
   default $E $nomen$lang$Kernel$Array() {
-    return ($E)new Array();
+    return ($E)new Array<>();
   } 
   
   default $E $nomen$lang$Kernel$Obj() {
-    return ($E)new Obj();
+    return ($E)new Obj<>();
   } 
-	
+
+  default $E $nomen$lang$Kernel$Nihil() {
+    return ($E)new Nihil<>();
+  } 
+
 	default $E $false() {
 		return $bool(false);
 	}
@@ -326,18 +331,38 @@ public interface Kernel<$E extends Kernel<$E>>  {
 	}
 	
 	// this is the base class if you don't want any standard features
-	class Nothing<$E extends Kernel<$E>> implements Kernel<$E> {
+	class Nihil<$E extends Kernel<$E>> implements Kernel<$E> {
 		@Override
 		public $E method_missing($E sym, $E args) {
 			throw new RuntimeException("noSuchMethod " + sym + " on " + this + " with arguments " + args);
 		}
+		
+  	//  To interface with java things
+		// NB: these should *never* be overridden in nomen subclasses
+		// (name mangling should avoid this).
+		@Override
+		public String toString() {
+			// todo: error handling.
+			return ((Str<$E>)to_string()).string;
+		}
+		
+		@Override
+		public int hashCode() {
+			// todo: error handling
+			return ((Int<$E>)hash()).integer;
+		}
+		
+		@Override
+		public boolean equals(Object obj) {
+			return $truth(_equals(($E)obj));
+		}
 	}
 	
 	// TODO: make interface to allow interop with ordinary Java classes.
-	class Obj<$E extends Kernel<$E>> extends Nothing<$E> implements Kernel<$E> {
+	class Obj<$E extends Kernel<$E>> extends Nihil<$E> implements Kernel<$E> {
 		@Override
 		public $E initialize() {
-			return ($E) this;
+			return ($E)this;
 		}
 		
 		@Override
@@ -364,26 +389,6 @@ public interface Kernel<$E extends Kernel<$E>>  {
 		public $E puts($E obj) {
 			System.out.println(obj);
 			return $nil();
-		}
-		
-		// To interface with java things
-		// NB: these should *never* be overridden in nomen subclasses
-		// (name mangling should avoid this).
-		@Override
-		public String toString() {
-			// todo: error handling.
-			return ((Str<$E>)to_string()).string;
-		}
-		
-		@Override
-		public int hashCode() {
-			// todo: error handling
-			return ((Int<$E>)hash()).integer;
-		}
-		
-		@Override
-		public boolean equals(Object obj) {
-			return $truth(_equals(($E)obj));
 		}
 		
 		
@@ -450,7 +455,6 @@ public interface Kernel<$E extends Kernel<$E>>  {
 				}
 			});
 			$E next = $block(new Block<$E>() {
-				@SuppressWarnings("unchecked")
 				@Override
 				public $E call() {
 					i[0]++;
@@ -562,7 +566,6 @@ public interface Kernel<$E extends Kernel<$E>>  {
 
 		@Override
 		public $E _equals($E other) {
-			System.out.println("Comparing bools: " + this + " == " + other);
 			if (!(other instanceof Bool)) {
 				return $false();
 			}

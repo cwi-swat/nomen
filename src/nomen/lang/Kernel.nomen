@@ -1,9 +1,9 @@
 module nomen/lang/Kernel
 
-class Nothing
+class Nihil
   def method_missing(sym, args): ;
 
-class Obj: Nothing 
+class Obj: Nihil 
   def initialize: ;
   def ==(other): ;
   def !=(other): ;
