@@ -110,11 +110,6 @@ Env declareExpr(Scope scope, Expr e) {
           + { *declareExpr(scope, arg) | arg <- es }
           + { *declareMethod(e@\loc, m) | m <- ms };
 
-    case e:(Expr)`new { <Member* ms> }`:
-      env += {<scope, selector("initialize", 0), e@\loc> }
-          + { <e@\loc, class(anonymous(e@\loc)), e@\loc> }
-          + { *declareMethod(e@\loc, m) | m <- ms };
-   
     case Expr e => declareSelector(e)
       when isMethodCall(e)
   }

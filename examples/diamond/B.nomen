@@ -1,0 +1,5 @@
+module diamond/B
+
+import diamond/Bot
+
+class InB: Foo

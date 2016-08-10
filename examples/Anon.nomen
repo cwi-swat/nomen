@@ -2,10 +2,12 @@ module Anon
 
 class Bla
   def f:
-    var y = new { def g: 1 + 2 };
-    var x = new Bla { def g: "overridden " + super.g };
+    var i = 3;
+    var y = new { def g: 1 + 2 + 3 };
+    var x = new Bla { def g: i = i + 2; "overridden " + super.g + i };
     puts("y.g = " + y.g);
     puts("x.g = " + x.g);
+    puts(i);
  def g:
    "bla"
     

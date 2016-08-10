@@ -1,0 +1,10 @@
+module diamond/Top
+
+import diamond/A
+import diamond/B
+
+
+class Main
+  def main(args): 
+    new InA;
+    new InB;

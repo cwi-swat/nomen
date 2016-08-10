@@ -44,4 +44,5 @@ class Main
     puts(f.fact(10));
     var x = 3;
     var p = new Person("Tijs", x);
+    var aBlock = { puts("Hello world!" + x) };
     puts(p)

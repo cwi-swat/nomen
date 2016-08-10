@@ -1,0 +1,5 @@
+module diamond/A
+
+import diamond/Bot
+
+class InA: Foo

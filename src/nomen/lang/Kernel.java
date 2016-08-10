@@ -1,5 +1,6 @@
 package nomen.lang;
 
+import java.util.Arrays;
 import java.util.Iterator;
 
 
@@ -158,6 +159,10 @@ public interface Kernel<$E extends Kernel<$E>>  {
 		Str<$E> s = (Str<$E>) $nomen$lang$Kernel$Str();
 		s.string = x;
 		return ($E)s;
+	}
+	
+	default $E[] $box($E... e) {
+		return e;
 	}
 	
 	default $E $args(String[] args) {

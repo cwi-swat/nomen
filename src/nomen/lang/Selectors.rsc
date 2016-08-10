@@ -90,7 +90,7 @@ MethodCall destructure(x:(Expr)`(<Expr e>)`) = destructure(e);
 
 
 bool isMethodCall((Expr)`<Id x>`) = false;
-bool isMethodCall((Expr)`@<Id x>`) = false;
+bool isMethodCall((Expr)`@<ID x>`) = false;
 bool isMethodCall((Expr)`new <CId x>(<{Expr ","}* es>)`) = false;
 bool isMethodCall((Expr)`self`) = false;
 bool isMethodCall((Expr)`<Expr l> && <Expr r>`) = false;

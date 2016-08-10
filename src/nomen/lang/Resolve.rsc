@@ -43,6 +43,8 @@ x -> -> vardecls of x in scope
 alias Refs = rel[Scope scope, loc use, loc def, str label];
 
 bool isBeforeOrAt(loc x, loc y) = x.path == y.path && x.offset <= y.offset;
+
+// x contains y
 bool contains(loc x, loc y) 
   = x.path == y.path  
   && x.offset <= y.offset && x.length >= y.length + (y.offset - x.offset);
@@ -117,6 +119,7 @@ Refs resolveMember(loc scope, (Member)`def <DId d>(<{Id ","}* fs>): <Body b>`, E
         <superScope, method("<d>", a), loc inhMethod> <- env /*,bprintln("**** found decl: <inhMethod>") */} // todo: should be transitive
         
   + { *resolveVar(b@\loc, f, env) | f <- fs } + resolveBody(b@\loc, b, env)
+  + /* temp hack to detect variable capture */ { <scope, d@\loc, d@\loc, "$method">}
   when a := arity(fs);
 
 Refs resolveBody(Scope scope, (Body)`;`, Env env) = {};
@@ -163,14 +166,11 @@ Refs resolveExpr(Scope scope, Expr e, Env env) {
       refs += resolveClass(scope, c, env)
            + {*resolveExpr(scope, a, env) | a <- args}; 
 
-    case (Expr)`new <CId c>(<{Expr ","}* args>) {<Member* ms>}`:
+    case e:(Expr)`new <CId c>(<{Expr ","}* args>) {<Member* ms>}`:
       refs += resolveClass(scope, c, env)
            + {*resolveExpr(scope, a, env) | a <- args}
-           + resolveMembers(scope, ms, env); 
+           + resolveMembers(e@\loc, ms, env); 
 
-    case (Expr)`new {<Member* ms>}`:
-      refs += resolveMembers(scope, ms, env); 
-    
     case Expr exp => resolveCall(exp)
       when isMethodCall(e)
   }

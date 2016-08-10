@@ -231,7 +231,7 @@ syntax Sym
   ;
 
 syntax FId
-  = "@" [@] << Id
+  = "@" [@] << ID
   ;
   
 syntax PId
@@ -256,11 +256,11 @@ keyword Reserved
 
 
 syntax Id
-  = ID
+  = ID \ Reserved
   ;
 
 lexical ID
-  = ([a-zA-Z_0-9] !<< [a-z][a-zA-Z_0-9]* !>> [a-zA-Z_0-9]) \ Reserved
+  = ([a-zA-Z_0-9] !<< [a-z][a-zA-Z_0-9]* !>> [a-zA-Z_0-9]) 
   | "\'" [a-zA-Z][a-zA-Z_0-9]* !>> [a-zA-Z_0-9]
   ;
   

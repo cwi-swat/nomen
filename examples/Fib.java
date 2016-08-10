@@ -3,9 +3,6 @@
 public interface Fib<$O extends Fib<$O>> 
    extends nomen.lang.Kernel<$O>, Bar<$O> {
   
-  default $O main($O arg0) {
-     return method_missing($str("main"), $array(arg0));
-  }
   default $O to_string($O arg0) {
      return method_missing($str("to_string"), $array(arg0));
   }
@@ -15,8 +12,17 @@ public interface Fib<$O extends Fib<$O>>
   default $O initialize($O arg0, $O arg1) {
      return method_missing($str("initialize"), $array(arg0, arg1));
   }
+  default $O main($O arg0) {
+     return method_missing($str("main"), $array(arg0));
+  }
+  default $O call($O arg0) {
+     return method_missing($str("call"), $array(arg0));
+  }
   default $O a($O arg0, $O arg1) {
      return method_missing($str("a"), $array(arg0, arg1));
+  }
+  default $O initialize($O arg0) {
+     return method_missing($str("initialize"), $array(arg0));
   }
   default $O b($O arg0, $O arg1) {
      return method_missing($str("b"), $array(arg0, arg1));
@@ -48,6 +54,9 @@ public interface Fib<$O extends Fib<$O>>
   default $O a($O arg0) {
      return method_missing($str("a"), $array(arg0));
   }
+  default $O call() {
+     return method_missing($str("call"), $array());
+  }
   default $O f($O arg0) {
      return method_missing($str("f"), $array(arg0));
   }
@@ -58,6 +67,7 @@ public interface Fib<$O extends Fib<$O>>
   
   abstract class Int<$O extends Fib<$O>> extends nomen.lang.Kernel.Obj<$O> implements Fib<$O> {
     
+    
   
     public Int() { 
       super(); 
@@ -67,6 +77,7 @@ public interface Fib<$O extends Fib<$O>>
   }
   
   abstract class Bla<$O extends Fib<$O>> extends nomen.lang.Kernel.Obj<$O> implements Fib<$O> {
+    
     
   
     public Bla() { 
@@ -83,6 +94,7 @@ public interface Fib<$O extends Fib<$O>>
   }
   
   abstract class Fact<$O extends Fib<$O>> extends Fib.Bla<$O> implements Fib<$O> {
+    
     
   
     public Fact() { 
@@ -110,21 +122,24 @@ public interface Fib<$O extends Fib<$O>>
   }
   
   abstract class Person<$O extends Fib<$O>> extends nomen.lang.Kernel.Obj<$O> implements Fib<$O> {
-    protected $O name;
-    protected $O age;
+    protected $O _self;
+    protected $O _age;
+    protected $O _name;
+    
     
   
     public Person() { 
       super(); 
-      this.name = $nil();
-      this.age = $nil();
+      this._self = $nil();
+      this._age = $nil();
+      this._name = $nil();
       
     }
     @Override
   public $O initialize($O name, $O age) {
     $O $ret = $nil();
-    $ret = Person.this.name = name;
-    $ret = Person.this.age = age;
+    $ret = Person.this._name = name;
+    $ret = Person.this._age = age;
     return $ret;
   }
     @Override
@@ -136,26 +151,20 @@ public interface Fib<$O extends Fib<$O>>
     @Override
   public $O dsl() {
     $O $ret = $nil();
-    $ret = (($O)Person.this).a($int(2), (($O)Person.this).a((($O)Person.this).b(($int(1))._plus($int(2)), (($O)Person.this).f($block(new nomen.lang.Kernel.Block<$O>() {
-      @Override
-      public $O call($O a) {
-        $O $ret = $nil();
-        $ret = ((($int(1))._plus($int(2)))._star($int(2)))._star(a);
-        return $ret;
-      }
-    })))));
+    $ret = (($O)Person.this).a($int(2), (($O)Person.this).a((($O)Person.this).b(($int(1))._plus($int(2)), (($O)Person.this).f($new($Fib$Anon_examples_Fib_nomen_369(), $obj369 -> { $obj369.initialize(($O)Person.this); return $obj369; })))));
     return $ret;
   }
     @Override
   public $O to_string() {
     $O $ret = $nil();
-    $ret = (((($str("Person("))._plus(Person.this.name))._plus($str(",")))._plus(Person.this.age))._plus($str(")"));
+    $ret = (((($str("Person("))._plus(Person.this._name))._plus($str(",")))._plus(Person.this._age))._plus($str(")"));
     return $ret;
   }
     
   }
   
   abstract class XX<$O extends Fib<$O>> extends nomen.lang.Kernel.Obj<$O> implements Fib<$O> {
+    
     
   
     public XX() { 
@@ -166,10 +175,13 @@ public interface Fib<$O extends Fib<$O>>
   }
   
   abstract class Main<$O extends Fib<$O>> extends nomen.lang.Kernel.Obj<$O> implements Fib<$O> {
+    protected $O _self;
+    
     
   
     public Main() { 
       super(); 
+      this._self = $nil();
       
     }
     @Override
@@ -181,10 +193,11 @@ public interface Fib<$O extends Fib<$O>>
     @Override
   public $O main($O args) {
     $O $ret = $nil();
-    $O f = $ret = $new($Fib$Fact(), $obj1045 -> { $obj1045.initialize(); return $obj1045; });
+    $O f = $ret = $new($Fib$Fact(), $obj1114 -> { $obj1114.initialize(); return $obj1114; });
     $ret = (($O)Main.this).puts((f).fact($int(10)));
-    $O x = $ret = $int(3);
-    $O p = $ret = $new($Fib$Person(), $obj601 -> { $obj601.initialize($str("Tijs"), x); return $obj601; });
+    $O[] x = $box($ret = $int(3));
+    $O p = $ret = $new($Fib$Person(), $obj601 -> { $obj601.initialize($str("Tijs"), x[0]); return $obj601; });
+    $O aBlock = $ret = $new($Fib$Anon_examples_Fib_nomen_641(), $obj641 -> { ((Anon_examples_Fib_nomen_641<$O>)$obj641).x = x; $obj641.initialize(($O)Main.this); return $obj641; });
     $ret = (($O)Main.this).puts(p);
     return $ret;
   }
@@ -193,9 +206,65 @@ public interface Fib<$O extends Fib<$O>>
   
   
   
+  abstract class Anon_examples_Fib_nomen_369<$O extends Fib<$O>> extends nomen.lang.Kernel.Block<$O> implements Fib<$O> {
+    protected $O _self;
+    
+    
+  
+    public Anon_examples_Fib_nomen_369() { 
+      super(); 
+      this._self = $nil();
+      
+    }
+    @Override
+  public $O initialize($O myself) {
+    $O $ret = $nil();
+    $ret = Anon_examples_Fib_nomen_369.this._self = myself;
+    return $ret;
+  }
+    @Override
+  public $O call($O a) {
+    $O $ret = $nil();
+    $ret = ((($int(1))._plus($int(2)))._star($int(2)))._star(a);
+    return $ret;
+  }
+    
+  }
+  
+  abstract class Anon_examples_Fib_nomen_641<$O extends Fib<$O>> extends nomen.lang.Kernel.Block<$O> implements Fib<$O> {
+    protected $O _self;
+    
+    public $O[] x;
+    
+  
+    public Anon_examples_Fib_nomen_641() { 
+      super(); 
+      this._self = $nil();
+      
+    }
+    @Override
+  public $O initialize($O myself) {
+    $O $ret = $nil();
+    $ret = Anon_examples_Fib_nomen_641.this._self = myself;
+    return $ret;
+  }
+    @Override
+  public $O call() {
+    $O $ret = $nil();
+    $ret = (Anon_examples_Fib_nomen_641.this._self).puts(($str("Hello world!"))._plus(x[0]));
+    return $ret;
+  }
+    
+  }
+  
   
   
     interface $Self extends Fib<$Self> { }
+    
+    
+    default $O $Fib$Anon_examples_Fib_nomen_641() {
+      return ($O)new $Fib$Anon_examples_Fib_nomen_641();
+    }
     
     @Override
     default $O $nomen$lang$Kernel$Int() {
@@ -220,11 +289,6 @@ public interface Fib<$O extends Fib<$O>>
     @Override
     default $O $nomen$lang$Kernel$Block() {
       return ($O)new $nomen$lang$Kernel$Block();
-    }
-    
-    @Override
-    default $O $Bar$A() {
-      return ($O)new $Bar$A();
     }
     
     @Override
@@ -276,7 +340,19 @@ public interface Fib<$O extends Fib<$O>>
     default $O $Fib$Int() {
       return ($O)new $Fib$Int();
     }
+    
+    @Override
+    default $O $Bar$A() {
+      return ($O)new $Bar$A();
+    }
+    
+    
+    default $O $Fib$Anon_examples_Fib_nomen_369() {
+      return ($O)new $Fib$Anon_examples_Fib_nomen_369();
+    }
      
+    
+    class $Fib$Anon_examples_Fib_nomen_641 extends Fib.Anon_examples_Fib_nomen_641<$Self> implements $Self { } 
     
     class $nomen$lang$Kernel$Int extends nomen.lang.Kernel.Int<$Self> implements $Self { } 
     
@@ -287,8 +363,6 @@ public interface Fib<$O extends Fib<$O>>
     class $nomen$lang$Kernel$Array extends nomen.lang.Kernel.Array<$Self> implements $Self { } 
     
     class $nomen$lang$Kernel$Block extends nomen.lang.Kernel.Block<$Self> implements $Self { } 
-    
-    class $Bar$A extends Bar.A<$Self> implements $Self { } 
     
     class $nomen$lang$Kernel$Bool extends nomen.lang.Kernel.Bool<$Self> implements $Self { } 
     
@@ -309,6 +383,10 @@ public interface Fib<$O extends Fib<$O>>
     class $nomen$lang$Kernel$Str extends nomen.lang.Kernel.Str<$Self> implements $Self { } 
     
     class $Fib$Int extends Fib.Int<$Self> implements $Self { } 
+    
+    class $Bar$A extends Bar.A<$Self> implements $Self { } 
+    
+    class $Fib$Anon_examples_Fib_nomen_369 extends Fib.Anon_examples_Fib_nomen_369<$Self> implements $Self { } 
     
     static void main(String[] args) {
       Main<$Self> main = new Main<$Self>() {};
