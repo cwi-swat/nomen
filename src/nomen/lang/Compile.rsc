@@ -45,8 +45,6 @@ str compileModule(start[Module] pt, Env env, Refs refs, Classes classes) {
    <pkg, cls> = decomp(m.name); 
    name = "<m.name>";
    
-   bool hasMain = (<_, class("Main"), _> <- env);
-   
    loc file = pt@\loc[extension="java"];
    
    src =  "<pkg == "" ? "" : "package <pkg>;"> 
@@ -66,7 +64,7 @@ str compileModule(start[Module] pt, Env env, Refs refs, Classes classes) {
           '  <compileAnonClass(e, m.name, refs)>
           '  <}>
           '  
-          '  <if (Decl d <- m.decls, d has name, d.name == (CId)`Main`) {>
+          '  <if (hasMain(m.decls)) {>
           '    interface $Self extends <cls>\<$Self\> { }
           '    <for (<str i, str c> <- classes) {>
           '    <i != name ? "@Override" : "">
@@ -90,6 +88,10 @@ str compileModule(start[Module] pt, Env env, Refs refs, Classes classes) {
      
    return src;       
 }
+
+bool hasMain(Decl* ds)
+  = (Decl d <- ds && d has name && d.name == (CId)`Main`
+    && (Member)`def main(<Id _>): <Body _>` <- d.members);
 
 bool isAnonNew((Expr)`new {<Member* ms>}`) = true;
 bool isAnonNew((Expr)`new <CId _>(<{Expr ","}* _>) {<Member* ms>}`) = true;

@@ -165,10 +165,10 @@ public interface Fib<$O extends Fib<$O>>
     
   }
   
-  abstract class Main2<$O extends Fib<$O>> extends nomen.lang.Kernel.Obj<$O> implements Fib<$O> {
+  abstract class Main<$O extends Fib<$O>> extends nomen.lang.Kernel.Obj<$O> implements Fib<$O> {
     
   
-    public Main2() { 
+    public Main() { 
       super(); 
       
     }
@@ -182,10 +182,10 @@ public interface Fib<$O extends Fib<$O>>
   public $O main($O args) {
     $O $ret = $nil();
     $O f = $ret = $new($Fib$Fact(), $obj1045 -> { $obj1045.initialize(); return $obj1045; });
-    $ret = (($O)Main2.this).puts((f).fact($int(10)));
+    $ret = (($O)Main.this).puts((f).fact($int(10)));
     $O x = $ret = $int(3);
-    $O p = $ret = $new($Fib$Person(), $obj602 -> { $obj602.initialize($str("Tijs"), x); return $obj602; });
-    $ret = (($O)Main2.this).puts(p);
+    $O p = $ret = $new($Fib$Person(), $obj601 -> { $obj601.initialize($str("Tijs"), x); return $obj601; });
+    $ret = (($O)Main.this).puts(p);
     return $ret;
   }
     
@@ -195,18 +195,124 @@ public interface Fib<$O extends Fib<$O>>
   
   
   
+    interface $Self extends Fib<$Self> { }
     
-  $O $Fib$XX();
+    @Override
+    default $O $nomen$lang$Kernel$Int() {
+      return ($O)new $nomen$lang$Kernel$Int();
+    }
     
-  $O $Fib$Bla();
     
-  $O $Fib$Person();
+    default $O $Fib$Main() {
+      return ($O)new $Fib$Main();
+    }
     
-  $O $Fib$Main2();
+    @Override
+    default $O $nomen$lang$Kernel$Nil() {
+      return ($O)new $nomen$lang$Kernel$Nil();
+    }
     
-  $O $Fib$Fact();
+    @Override
+    default $O $nomen$lang$Kernel$Array() {
+      return ($O)new $nomen$lang$Kernel$Array();
+    }
     
-  $O $Fib$Int();
+    @Override
+    default $O $nomen$lang$Kernel$Block() {
+      return ($O)new $nomen$lang$Kernel$Block();
+    }
     
+    @Override
+    default $O $Bar$A() {
+      return ($O)new $Bar$A();
+    }
+    
+    @Override
+    default $O $nomen$lang$Kernel$Bool() {
+      return ($O)new $nomen$lang$Kernel$Bool();
+    }
+    
+    
+    default $O $Fib$XX() {
+      return ($O)new $Fib$XX();
+    }
+    
+    
+    default $O $Fib$Bla() {
+      return ($O)new $Fib$Bla();
+    }
+    
+    
+    default $O $Fib$Person() {
+      return ($O)new $Fib$Person();
+    }
+    
+    @Override
+    default $O $nomen$lang$Kernel$Iter() {
+      return ($O)new $nomen$lang$Kernel$Iter();
+    }
+    
+    @Override
+    default $O $nomen$lang$Kernel$Nihil() {
+      return ($O)new $nomen$lang$Kernel$Nihil();
+    }
+    
+    
+    default $O $Fib$Fact() {
+      return ($O)new $Fib$Fact();
+    }
+    
+    @Override
+    default $O $nomen$lang$Kernel$Obj() {
+      return ($O)new $nomen$lang$Kernel$Obj();
+    }
+    
+    @Override
+    default $O $nomen$lang$Kernel$Str() {
+      return ($O)new $nomen$lang$Kernel$Str();
+    }
+    
+    
+    default $O $Fib$Int() {
+      return ($O)new $Fib$Int();
+    }
+     
+    
+    class $nomen$lang$Kernel$Int extends nomen.lang.Kernel.Int<$Self> implements $Self { } 
+    
+    class $Fib$Main extends Fib.Main<$Self> implements $Self { } 
+    
+    class $nomen$lang$Kernel$Nil extends nomen.lang.Kernel.Nil<$Self> implements $Self { } 
+    
+    class $nomen$lang$Kernel$Array extends nomen.lang.Kernel.Array<$Self> implements $Self { } 
+    
+    class $nomen$lang$Kernel$Block extends nomen.lang.Kernel.Block<$Self> implements $Self { } 
+    
+    class $Bar$A extends Bar.A<$Self> implements $Self { } 
+    
+    class $nomen$lang$Kernel$Bool extends nomen.lang.Kernel.Bool<$Self> implements $Self { } 
+    
+    class $Fib$XX extends Fib.XX<$Self> implements $Self { } 
+    
+    class $Fib$Bla extends Fib.Bla<$Self> implements $Self { } 
+    
+    class $Fib$Person extends Fib.Person<$Self> implements $Self { } 
+    
+    class $nomen$lang$Kernel$Iter extends nomen.lang.Kernel.Iter<$Self> implements $Self { } 
+    
+    class $nomen$lang$Kernel$Nihil extends nomen.lang.Kernel.Nihil<$Self> implements $Self { } 
+    
+    class $Fib$Fact extends Fib.Fact<$Self> implements $Self { } 
+    
+    class $nomen$lang$Kernel$Obj extends nomen.lang.Kernel.Obj<$Self> implements $Self { } 
+    
+    class $nomen$lang$Kernel$Str extends nomen.lang.Kernel.Str<$Self> implements $Self { } 
+    
+    class $Fib$Int extends Fib.Int<$Self> implements $Self { } 
+    
+    static void main(String[] args) {
+      Main<$Self> main = new Main<$Self>() {};
+      main.main(main.$args(args));
+    }
   
 }

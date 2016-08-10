@@ -2,4 +2,5 @@ module ImportAnon
 
 import Anon
 
-class Bla
+class Main
+  def main(): ;
