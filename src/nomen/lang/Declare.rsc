@@ -105,11 +105,14 @@ Env declareExpr(Scope scope, Expr e) {
 
     case e:(Expr)`new <CId c>(<{Expr ","}* es>) { <Member* ms> }`:
       env += {<scope, selector("initialize", arity(es)), e@\loc> }
+          + { <e@\loc, class(anonymous(e@\loc)), e@\loc> }
+          + { <e@\loc, \extend("<c>"), c@\loc> }
           + { *declareExpr(scope, arg) | arg <- es }
           + { *declareMethod(e@\loc, m) | m <- ms };
 
     case e:(Expr)`new { <Member* ms> }`:
       env += {<scope, selector("initialize", 0), e@\loc> }
+          + { <e@\loc, class(anonymous(e@\loc)), e@\loc> }
           + { *declareMethod(e@\loc, m) | m <- ms };
    
     case Expr e => declareSelector(e)
@@ -119,7 +122,8 @@ Env declareExpr(Scope scope, Expr e) {
   return env;
 }
 
-str anonymous(loc x) = "Anon<replaceAll(replaceAll(x.path, "/", "_"), ".", "_")>_<x.offset>";
+str anonymous(loc x) = 
+  "Anon<replaceAll(replaceAll(x.path, "/", "_"), ".", "_")>_<x.offset>";
 
 // TODO: super.<DId d>(...)
 

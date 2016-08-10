@@ -86,10 +86,6 @@ str compileModule(start[Module] pt, Env env, Refs refs, Classes classes) {
 	        '  <}>
           '}";
      
-   //if (!endsWith(file.path, "nomen/lang/Kernel.java")) {
-   //  // TODO: should not be here.
-   //  writeFile(file.top, src);
-   //}    
    return src;       
 }
 
@@ -300,18 +296,21 @@ str compileExpr(new:(Expr)`new <CId cid>(<{Expr ","}* es>)`, CId cls)
     <_, l, _, str x> <- _REFS,
     str obj := "$obj<new@\loc.offset>";
 
-// For anon classes call new directly, since it's always module local
+
+// Ok, this hack, but we need to know the current module id here
+// for now we extract it from the loc...
 str compileExpr(new:(Expr)`new { <Member* ms> }`, CId cls)
-  = "$new(($O)new <a>\<\>(), <obj> -\> { <obj>.initialize(); return <obj>; })"
+  = "$new(<cid2java(a)>(), <obj> -\> { <obj>.initialize(); return <obj>; })"
   when 
-    str a := anonymous(new@\loc),
+    str f := new@\loc.file,
+    str a := "<f[0..findLast(f, ".nomen")]>/<anonymous(new@\loc)>",
     str obj := "$obj<new@\loc.offset>";
 
 str compileExpr(new:(Expr)`new <CId cid>(<{Expr ","}* es>) { <Member* ms> }`, CId cls) 
-  = "$new(($O)new <a>\<\>(), <obj> -\> { <obj>.initialize(<intercalate(", ", [ compileExpr(e, cls) | e <- es ])>); return <obj>; })"
+  = "$new(<cid2java(a)>(), <obj> -\> { <obj>.initialize(<intercalate(", ", [ compileExpr(e, cls) | e <- es ])>); return <obj>; })"
   when 
-    loc l := cid@\loc, 
-    str a := anonymous(new@\loc),
+    str f := new@\loc.file,
+    str a := "<f[0..findLast(f, ".nomen")]>/<anonymous(new@\loc)>",
     str obj := "$obj<new@\loc.offset>";
 
 str compileExpr((Expr)`nil`, CId cls) = "$nil()";

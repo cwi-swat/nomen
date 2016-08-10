@@ -1,0 +1,5 @@
+module ImportAnon
+
+import Anon
+
+class Bla

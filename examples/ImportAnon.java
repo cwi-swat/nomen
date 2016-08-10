@@ -1,28 +1,10 @@
  
 @SuppressWarnings({"unchecked"})
-public interface Anon<$O extends Anon<$O>> 
-   extends nomen.lang.Kernel<$O> {
-  
-  default $O g() {
-     return method_missing($str("g"), $array());
-  }
-  default $O _plus($O arg0) {
-     return method_missing($str("+"), $array(arg0));
-  }
-  default $O initialize() {
-     return method_missing($str("initialize"), $array());
-  }
-  default $O puts($O arg0) {
-     return method_missing($str("puts"), $array(arg0));
-  }
-  default $O f() {
-     return method_missing($str("f"), $array());
-  }
-  default $O main($O arg0) {
-     return method_missing($str("main"), $array(arg0));
-  }
+public interface ImportAnon<$O extends ImportAnon<$O>> 
+   extends Anon<$O>, nomen.lang.Kernel<$O> {
   
   
+  @Override
   default $O $Anon$Anon_examples_Anon_nomen_44() {
     return ($O)new $Anon$Anon_examples_Anon_nomen_44();
   } 
@@ -42,7 +24,7 @@ public interface Anon<$O extends Anon<$O>>
   default $O $nomen$lang$Kernel$Array() {
     return ($O)new $nomen$lang$Kernel$Array();
   } 
-  
+  @Override
   default $O $Anon$Bla() {
     return ($O)new $Anon$Bla();
   } 
@@ -50,7 +32,7 @@ public interface Anon<$O extends Anon<$O>>
   default $O $nomen$lang$Kernel$Block() {
     return ($O)new $nomen$lang$Kernel$Block();
   } 
-  
+  @Override
   default $O $Anon$Main() {
     return ($O)new $Anon$Main();
   } 
@@ -62,6 +44,10 @@ public interface Anon<$O extends Anon<$O>>
   default $O $nomen$lang$Kernel$Iter() {
     return ($O)new $nomen$lang$Kernel$Iter();
   } 
+  
+  default $O $ImportAnon$Bla() {
+    return ($O)new $ImportAnon$Bla();
+  } 
   @Override
   default $O $nomen$lang$Kernel$Nihil() {
     return ($O)new $nomen$lang$Kernel$Nihil();
@@ -70,13 +56,13 @@ public interface Anon<$O extends Anon<$O>>
   default $O $nomen$lang$Kernel$Str() {
     return ($O)new $nomen$lang$Kernel$Str();
   } 
-  
+  @Override
   default $O $Anon$Anon_examples_Anon_nomen_78() {
     return ($O)new $Anon$Anon_examples_Anon_nomen_78();
   } 
   
 
-  interface $Self extends Anon<$Self> { }
+  interface $Self extends ImportAnon<$Self> { }
 
   
   class $Anon$Anon_examples_Anon_nomen_44 extends Anon.Anon_examples_Anon_nomen_44<$Self> implements $Self { } 
@@ -99,6 +85,8 @@ public interface Anon<$O extends Anon<$O>>
   
   class $nomen$lang$Kernel$Iter extends nomen.lang.Kernel.Iter<$Self> implements $Self { } 
   
+  class $ImportAnon$Bla extends ImportAnon.Bla<$Self> implements $Self { } 
+  
   class $nomen$lang$Kernel$Nihil extends nomen.lang.Kernel.Nihil<$Self> implements $Self { } 
   
   class $nomen$lang$Kernel$Str extends nomen.lang.Kernel.Str<$Self> implements $Self { } 
@@ -107,87 +95,18 @@ public interface Anon<$O extends Anon<$O>>
   
 
   
-  class Bla<$O extends Anon<$O>> extends nomen.lang.Kernel.Obj<$O> implements Anon<$O> {
+  class Bla<$O extends ImportAnon<$O>> extends nomen.lang.Kernel.Obj<$O> implements ImportAnon<$O> {
     
   
     public Bla() { 
       super(); 
       
     }
-    @Override
-  public $O f() {
-    $O $ret = $nil();
-    $O y = $ret = $new($Anon$Anon_examples_Anon_nomen_44(), $obj44 -> { $obj44.initialize(); return $obj44; });
-    $O x = $ret = $new($Anon$Anon_examples_Anon_nomen_78(), $obj78 -> { $obj78.initialize(); return $obj78; });
-    $ret = (($O)Bla.this).puts(($str("y.g = "))._plus((y).g()));
-    $ret = (($O)Bla.this).puts(($str("x.g = "))._plus((x).g()));
-    return $ret;
-  }
-    @Override
-  public $O g() {
-    $O $ret = $nil();
-    $ret = $str("bla");
-    return $ret;
-  }
-    
-  }
-  
-  class Main<$O extends Anon<$O>> extends nomen.lang.Kernel.Obj<$O> implements Anon<$O> {
-    
-  
-    public Main() { 
-      super(); 
-      
-    }
-    @Override
-  public $O main($O args) {
-    $O $ret = $nil();
-    $O b = $ret = $new($Anon$Bla(), $obj1045 -> { $obj1045.initialize(); return $obj1045; });
-    $ret = (b).f();
-    return $ret;
-  }
     
   }
   
   
   
-  class Anon_examples_Anon_nomen_44<$O extends Anon<$O>> extends nomen.lang.Kernel.Obj<$O> implements Anon<$O> {
-    
   
-    public Anon_examples_Anon_nomen_44() { 
-      super(); 
-      
-    }
-    @Override
-  public $O g() {
-    $O $ret = $nil();
-    $ret = ($int(1))._plus($int(2));
-    return $ret;
-  }
-    
-  }
-  
-  class Anon_examples_Anon_nomen_78<$O extends Anon<$O>> extends Anon.Bla<$O> implements Anon<$O> {
-    
-  
-    public Anon_examples_Anon_nomen_78() { 
-      super(); 
-      
-    }
-    @Override
-  public $O g() {
-    $O $ret = $nil();
-    $ret = ($str("overridden "))._plus(super.g());
-    return $ret;
-  }
-    
-  }
-  
-  
-  
-  static void main(String[] args) {
-    Main<$Self> main = new Main<$Self>();
-    main.main(main.$args(args));
-  }
   
 }
