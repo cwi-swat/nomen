@@ -27,24 +27,15 @@ public interface James<$O extends James<$O>>
     }
     @Override
   public $O main($O args) {
-    	long total = 0;
-    	$O $ret = $nil();
-  		
-    	for (int j = 0; j < 1000; j++) {
-    		long n = System.currentTimeMillis();
-    		$O i = $ret = $int(1);
-    		$O sum = $ret = $int(0);
-    		while ($truth((i)._leq($int(1000000)))) {
-    			$ret = sum = (sum)._plus(i);
-    			$ret = i = (i)._plus($int(1));
-    		}
-    		long n2 = System.currentTimeMillis();
-    		total += n2 - n;
-    		$ret = (($O)Main.this).puts(sum);
-    	}
-    	
-    	System.out.println((total * 1.0) / 1000.0);
-    	return $ret;
+    $O $ret = $nil();
+    $O i = $ret = $int(1);
+    $O sum = $ret = $int(0);
+    while ($truth((i)._leq($int(1000000)))) {
+      $ret = sum = (sum)._plus(i);
+      $ret = i = (i)._plus($int(1));
+    }
+    $ret = (($O)Main.this).puts(sum);
+    return $ret;
   }
     
   }
