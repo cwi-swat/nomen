@@ -1,0 +1,11 @@
+module James
+
+class Main
+  def main(args):
+    var i = 1;
+    var sum = 0;
+    while i <= 1000000 do
+      sum = sum + i;
+      i = i + 1;
+    end
+    puts(sum)
