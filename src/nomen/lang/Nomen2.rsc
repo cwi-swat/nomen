@@ -60,7 +60,7 @@ syntax Default
     
 syntax Stm
   = empty: ";"
-  | expr: Expr!brack ";" // oterhwise trailing stm becomes amb with normal call
+  | expr: Expr!brack ";" // to avoid amb with ordinary call and trailing.
   | decl: "var" Id ";"  // sugar
   | declInit: "var" Id "=" Stm  
   | ifThenElse: "if" Expr "then" Body "else" Body "end"
@@ -81,7 +81,7 @@ syntax Stm
   | Id >> [(] "(" {Expr ","}* ")" Stm!empty
   
   // with trailing stm and literal args
-  | Expr "." Id {Expr!brack!var!new0!new!newAnonObj!newAnon0!newAnon
+  | Expr "." Id {Expr!block!brack!var!new0!new!newAnonObj!newAnon0!newAnon
                      !self!superSend!superSendNoArgs!send
                      !sendNoArgs!selfSend!getElt
                      !sendLit!selfSendLit!newLit!prefixPlus
@@ -90,7 +90,7 @@ syntax Stm
                      !llt!gt!geq!lt!leq!eq!neq!tilde!amp
                      !hat!pipe!and!or!cond!infix!fieldAssign
                      !varAssign!setElt!setAttr ","}+  Stm!empty
-  | Id {Expr!brack!var!new0!new!newAnonObj!newAnon0!newAnon
+  | Id {Expr!block!brack!var!new0!new!newAnonObj!newAnon0!newAnon
                      !self!superSend!superSendNoArgs!send
                      !sendNoArgs!selfSend!getElt
                      !sendLit!selfSendLit!newLit!prefixPlus
@@ -149,6 +149,8 @@ syntax Expr
   = var: Id
   | field: FId
   | lit: Lit
+  | block: Block
+  
   | bracket brack: "(" Expr ")"
   | self: "self"
   
@@ -174,7 +176,7 @@ syntax Expr
   > sendNoArgs: Expr "." Id // sugar
   | send: Expr "." Id >> [(] "(" {Expr ","}* ")"
   | selfSend: Id >> [(] "(" {Expr ","}* ")" // sugar
-  | sendLit: Expr "." Id {Expr!brack!var!new0!new!newAnonObj!newAnon0!newAnon
+  | sendLit: Expr "." Id {Expr!block!brack!var!new0!new!newAnonObj!newAnon0!newAnon
                      !self!superSend!superSendNoArgs!send
                      !sendNoArgs!selfSend!getElt
                      !sendLit!selfSendLit!newLit!prefixPlus
@@ -183,7 +185,7 @@ syntax Expr
                      !llt!gt!geq!lt!leq!eq!neq!tilde!amp
                      !hat!pipe!and!or!cond!infix!fieldAssign
                      !varAssign!setElt!setAttr ","}+ 
-  | selfSendLit: Id {Expr!brack!var!new0!new!newAnonObj!newAnon0!newAnon
+  | selfSendLit: Id {Expr!block!brack!var!new0!new!newAnonObj!newAnon0!newAnon
                      !self!superSend!superSendNoArgs!send
                      !sendNoArgs!selfSend!getElt
                      !sendLit!selfSendLit!newLit!prefixPlus
@@ -244,7 +246,6 @@ syntax Lit
   | \int: Int
   | sym: Sym
   | nil: "nil"
-  | block: Block
   | array: "[" {Expr ","}* "]"
   | dict: "{" {KeyVal ","}* "}"
   ;
@@ -309,169 +310,4 @@ lexical ID
 lexical SId
   = ([a-zA-Z_0-9] !<< [A-Z][a-zA-Z_0-9]* !>> [a-zA-Z_0-9])
   ;
-  
-start syntax TestCheck
-  = "testing" Id name TCTest* tests
-  ;
-  
-syntax TCTest
-  = @Foldable "test" Str name "{" Module* modules "}" 
-  ;
-  
-//syntax TId
-//  = @category="Variable" Id
-//  ;
-  
-syntax Mark[&T]
-  = error: "$" "error" "(" &T ")"
-  | warning: "$" "warning" "(" &T ")"
-  | use: "$" "use" "(" &T ")"
-  | def: "$" "def" "(" &T ")"
-  ;
-  
-
-syntax CId
-  = mark: Mark[CId]
-  ;  
-
-syntax Id
-  = mark: Mark[Id]
-  ;  
-  
-syntax MId
-  = mark: Mark[MId]
-  ;
-  
-syntax DId
-  = mark: Mark[DId]
-  ;
-  
-alias Check = tuple[rel[loc scope, loc use, loc def, str label], set[Message]](Module* ms);
-  
-void registerTestCheck(Check check) {
-   registerLanguage("NomenTest", "nt", start[TestCheck](str src, loc org) {
-     return parse(#start[TestCheck], src, org);
-   });
-   
-   registerContributions("NomenTest", {
-     builder(set[Message] (start[TestCheck] tree)  {
-        if (start[TestCheck] tc := tree) {
-          return runTests(tc, check);
-        }
-        return {error("Not a NomenTest", pt@\loc)};
-      })
-   });
-}
-
-set[Message] runTests(start[TestCheck] tc, Check check) 
-  = ( {} | it + runTest(t, check) | t <- tc.top.tests );
-
-set[Message] runTest(TCTest t, Check check) {
-  errors  = {};
-  warnings = {};
-  uses = {};
-  defs = {};
-  t2 = visit (t) {
-    case (CId)`$error(<CId cid>)`: {
-      errors += {cid@\loc};
-      insert cid;
-    } 
-    case (MId)`$error(<MId mid>)`: {
-      errors += {mid@\loc};
-      insert mid;
-    } 
-    case (DId)`$error(<DId did>)`: {
-      errors += {did@\loc};
-      insert did;
-    } 
-    case (Id)`$error(<Id x>)`:{
-      errors += {x@\loc};
-      insert x;
-    }
-    case (CId)`$warning(<CId cid>)`: {
-      warnings += {cid@\loc};
-      insert cid;
-    } 
-    case (MId)`$warning(<MId mid>)`: {
-      warnings += {mid@\loc};
-      insert mid;
-    } 
-    case (DId)`$warning(<DId did>)`: {
-      warnings += {did@\loc};
-      insert did;
-    } 
-    case (Id)`$warning(<Id x>)`:{
-      warnings += {x@\loc};
-      insert x;
-    }
-    case (Id)`$use(<Id x>)`:{
-      uses += {x@\loc};
-      insert x;
-    }
-    case (CId)`$use(<CId x>)`:{
-      uses += {x@\loc};
-      insert x;
-    }
-    case (MId)`$use(<MId x>)`:{
-      uses += {x@\loc};
-      insert x;
-    }
-    case (DId)`$use(<DId x>)`:{
-      uses += {x@\loc};
-      insert x;
-    }
-    case (Id)`$def(<Id x>)`:{
-      defs += {x@\loc};
-      insert x;
-    }
-    case (CId)`$def(<CId x>)`:{
-      defs += {x@\loc};
-      insert x;
-    }
-    case (MId)`$def(<MId x>)`:{
-      defs += {x@\loc};
-      insert x;
-    }
-    case (DId)`$def(<DId x>)`:{
-      defs += {x@\loc};
-      insert x;
-    }
-  };
-  
-  
-  <refs, checked> = check(t2.modules);
-  msgs = {};
-  done = {};
-  
-  expectedRefs = { <u, d> | u <- uses, d <- defs };
-    
-  for (<loc u, loc d> <- expectedRefs) {
-    if (<_, u, d, _> <- refs) {
-       msgs += {info("OK", u)};
-    }
-    else {
-      msgs += {error("Incorrect reference", u)};
-    }
-  } 
-  
-  void recordFailureIfAny(loc mloc, loc x) {
-    if (error(str label, loc l) <- checked, l == x) {
-      done += {l};
-      msgs += {info("OK: <label>", mloc)};
-      return;
-    }
-    msgs += {error("Expected error", mloc)};
-  }
-  
-  visit (t) {
-    case m:(CId)`$error(<CId cid>)`: recordFailureIfAny(m@\loc, cid@\loc);
-    case m:(MId)`$error(<MId mid>)`: recordFailureIfAny(m@\loc, mid@\loc);
-    case m:(DId)`$error(<DId did>)`: recordFailureIfAny(m@\loc, did@\loc);
-    case m:(Id)`$error(<Id x>)`: recordFailureIfAny(m@\loc, x@\loc);
-  };
-  
-  msgs += { msg[msg="Expected: <msg.msg>"] | Message msg <- checked, msg.at notin done };
-  
-  return msgs;
-} 
   
