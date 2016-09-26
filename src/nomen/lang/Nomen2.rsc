@@ -60,7 +60,7 @@ syntax Default
 
 syntax Trailing
   = Stm!empty!expr
-  | Expr!lit!block!brack ";" // seems arb to reject lit here.
+  | Expr!block!brack ";" 
   | Block
   ;
 
@@ -82,31 +82,20 @@ syntax Stm
   
   // calls with trailing stm
   // whitespace required, after Id, because otherwise f(x){} can be f((x){}) or (f(x)){}
-  
+
+  // no trailing variants are covered by expr statement.  
   | Id [\t\n\ ] << Trailing
   | Expr "." Id [\t\n\ ] << Trailing
   | Expr "." Id >> [(] "(" {Expr ","}* ")" Trailing
   | Id >> [(] "(" {Expr ","}* ")" Trailing
   
-  // with trailing stm and literal args
-  | Expr "." Id [\t\n\ ] << {Expr!block!brack!var!new0!new!newAnonObj!newAnon0!newAnon
-                     !self!superSend!superSendNoArgs!send
-                     !sendNoArgs!selfSend!getElt
-                     !sendLit!selfSendLit!newLit!prefixPlus
-                     !prefixMin!prefixBang!prefixTilde
-                     !star!slash!percent!plus!min!ggt
-                     !llt!gt!geq!lt!leq!eq!neq!tilde!amp
-                     !hat!pipe!and!or!cond!infix!fieldAssign
-                     !varAssign!setElt!setAttr ","}+  Trailing
-  | Id [\t\n\ ] << {Expr!block!brack!var!new0!new!newAnonObj!newAnon0!newAnon
-                     !self!superSend!superSendNoArgs!send
-                     !sendNoArgs!selfSend!getElt
-                     !sendLit!selfSendLit!newLit!prefixPlus
-                     !prefixMin!prefixBang!prefixTilde
-                     !star!slash!percent!plus!min!ggt
-                     !llt!gt!geq!lt!leq!eq!neq!tilde!amp
-                     !hat!pipe!and!or!cond!infix!fieldAssign
-                     !varAssign!setElt!setAttr ","}+ Trailing
+  // args but no parents, and trailing.
+  | noParens: Expr "." Id >> [:] ":" {Expr ","}+ Trailing  
+  | noParensSelf: Id >> [:] ":" {Expr ","}+ Trailing
+
+  // args but no parents, and no trailing.
+  | noParensNoTrailing: Expr "." Id >> [:] ":" {Expr ","}+ ";"  
+  | noParensSelfNoTrailing: Id >> [:] ":" {Expr ","}+ ";"
   ; 
 
 syntax DId
@@ -139,7 +128,7 @@ syntax DId
 
 syntax Body
   = Stm+ // never empty, to have empty, use empty stat ;
-  | Stm* Expr
+  //| Stm* Expr // simplify just require ;
   ;
 
 syntax Block
@@ -184,24 +173,28 @@ syntax Expr
   > sendNoArgs: Expr "." Id // sugar
   | send: Expr "." Id >> [(] "(" {Expr ","}* ")"
   | selfSend: Id >> [(] "(" {Expr ","}* ")" // sugar
-  | sendLit: Expr "." Id [\t\n\ ] << {Expr!block!brack!var!new0!new!newAnonObj!newAnon0!newAnon
-                     !self!superSend!superSendNoArgs!send
-                     !sendNoArgs!selfSend!getElt
-                     !sendLit!selfSendLit!newLit!prefixPlus
-                     !prefixMin!prefixBang!prefixTilde
-                     !star!slash!percent!plus!min!ggt
-                     !llt!gt!geq!lt!leq!eq!neq!tilde!amp
-                     !hat!pipe!and!or!cond!infix!fieldAssign
-                     !varAssign!setElt!setAttr ","}+ 
-  | selfSendLit: Id [\t\n\ ] << {Expr!block!brack!var!new0!new!newAnonObj!newAnon0!newAnon
-                     !self!superSend!superSendNoArgs!send
-                     !sendNoArgs!selfSend!getElt
-                     !sendLit!selfSendLit!newLit!prefixPlus
-                     !prefixMin!prefixBang!prefixTilde
-                     !star!slash!percent!plus!min!ggt
-                     !llt!gt!geq!lt!leq!eq!neq!tilde!amp
-                     !hat!pipe!and!or!cond!infix!fieldAssign
-                     !varAssign!setElt!setAttr ","}+
+  ////todo make this a more than one list, so that a single lit
+  //// is interpreted as trailing statement (and then in statement
+  //// allow it to be a single lit.)
+  //// and think about precedne a "b" + b "c" reads weird? 
+  //| sendLit: Expr "." Id [\t\n\ ] << {Expr!block!brack!var!new0!new!newAnonObj!newAnon0!newAnon
+  //                   !self!superSend!superSendNoArgs!send
+  //                   !sendNoArgs!selfSend!getElt
+  //                   !sendLit!selfSendLit!newLit!prefixPlus
+  //                   !prefixMin!prefixBang!prefixTilde
+  //                   !star!slash!percent!plus!min!ggt
+  //                   !llt!gt!geq!lt!leq!eq!neq!tilde!amp
+  //                   !hat!pipe!and!or!cond!infix!fieldAssign
+  //                   !varAssign!setElt!setAttr ","}+ 
+  //| selfSendLit: Id [\t\n\ ] << {Expr!block!brack!var!new0!new!newAnonObj!newAnon0!newAnon
+  //                   !self!superSend!superSendNoArgs!send
+  //                   !sendNoArgs!selfSend!getElt
+  //                   !sendLit!selfSendLit!newLit!prefixPlus
+  //                   !prefixMin!prefixBang!prefixTilde
+  //                   !star!slash!percent!plus!min!ggt
+  //                   !llt!gt!geq!lt!leq!eq!neq!tilde!amp
+  //                   !hat!pipe!and!or!cond!infix!fieldAssign
+  //                   !varAssign!setElt!setAttr ","}+
   > left (
     star: Expr "*" Expr 
   | slash: Expr [a-zA-Z0-9_\>] !<< "/" Expr
@@ -233,7 +226,7 @@ syntax Expr
   > left and: Expr "&&" Expr 
   > left or: Expr "||" Expr 
   > right cond: Expr "?" Expr ":" Expr
-  > right infix: Expr (Id >> [:] ":" >> [\n\t\ ]) Expr
+  //> right infix: Expr (Id >> [:] ":" >> [\n\t\ ]) Expr
   > fieldAssign: FId "=" Expr 
   | varAssign: Id "=" Expr
   | right ( 
