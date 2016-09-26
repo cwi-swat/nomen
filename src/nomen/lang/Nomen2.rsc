@@ -57,10 +57,16 @@ syntax Case
 syntax Default
   = "default" ":" Body
   ;
-    
+
+syntax Trailing
+  = Stm!empty!expr
+  | Expr!lit!block!brack ";" // seems arb to reject lit here.
+  | Block
+  ;
+
 syntax Stm
   = empty: ";"
-  | expr: Expr!brack ";" // to avoid amb with ordinary call and trailing.
+  | expr: Expr ";" 
   | decl: "var" Id ";"  // sugar
   | declInit: "var" Id "=" Stm  
   | ifThenElse: "if" Expr "then" Body "else" Body "end"
@@ -75,13 +81,15 @@ syntax Stm
   | retExpr: "return" Stm 
   
   // calls with trailing stm
-  | Id Stm!empty
-  | Expr "." Id Stm!empty
-  | Expr "." Id >> [(] "(" {Expr ","}* ")" Stm!empty
-  | Id >> [(] "(" {Expr ","}* ")" Stm!empty
+  // whitespace required, after Id, because otherwise f(x){} can be f((x){}) or (f(x)){}
+  
+  | Id [\t\n\ ] << Trailing
+  | Expr "." Id [\t\n\ ] << Trailing
+  | Expr "." Id >> [(] "(" {Expr ","}* ")" Trailing
+  | Id >> [(] "(" {Expr ","}* ")" Trailing
   
   // with trailing stm and literal args
-  | Expr "." Id {Expr!block!brack!var!new0!new!newAnonObj!newAnon0!newAnon
+  | Expr "." Id [\t\n\ ] << {Expr!block!brack!var!new0!new!newAnonObj!newAnon0!newAnon
                      !self!superSend!superSendNoArgs!send
                      !sendNoArgs!selfSend!getElt
                      !sendLit!selfSendLit!newLit!prefixPlus
@@ -89,8 +97,8 @@ syntax Stm
                      !star!slash!percent!plus!min!ggt
                      !llt!gt!geq!lt!leq!eq!neq!tilde!amp
                      !hat!pipe!and!or!cond!infix!fieldAssign
-                     !varAssign!setElt!setAttr ","}+  Stm!empty
-  | Id {Expr!block!brack!var!new0!new!newAnonObj!newAnon0!newAnon
+                     !varAssign!setElt!setAttr ","}+  Trailing
+  | Id [\t\n\ ] << {Expr!block!brack!var!new0!new!newAnonObj!newAnon0!newAnon
                      !self!superSend!superSendNoArgs!send
                      !sendNoArgs!selfSend!getElt
                      !sendLit!selfSendLit!newLit!prefixPlus
@@ -98,7 +106,7 @@ syntax Stm
                      !star!slash!percent!plus!min!ggt
                      !llt!gt!geq!lt!leq!eq!neq!tilde!amp
                      !hat!pipe!and!or!cond!infix!fieldAssign
-                     !varAssign!setElt!setAttr ","}+ Stm!empty
+                     !varAssign!setElt!setAttr ","}+ Trailing
   ; 
 
 syntax DId
@@ -176,7 +184,7 @@ syntax Expr
   > sendNoArgs: Expr "." Id // sugar
   | send: Expr "." Id >> [(] "(" {Expr ","}* ")"
   | selfSend: Id >> [(] "(" {Expr ","}* ")" // sugar
-  | sendLit: Expr "." Id {Expr!block!brack!var!new0!new!newAnonObj!newAnon0!newAnon
+  | sendLit: Expr "." Id [\t\n\ ] << {Expr!block!brack!var!new0!new!newAnonObj!newAnon0!newAnon
                      !self!superSend!superSendNoArgs!send
                      !sendNoArgs!selfSend!getElt
                      !sendLit!selfSendLit!newLit!prefixPlus
@@ -185,7 +193,7 @@ syntax Expr
                      !llt!gt!geq!lt!leq!eq!neq!tilde!amp
                      !hat!pipe!and!or!cond!infix!fieldAssign
                      !varAssign!setElt!setAttr ","}+ 
-  | selfSendLit: Id {Expr!block!brack!var!new0!new!newAnonObj!newAnon0!newAnon
+  | selfSendLit: Id [\t\n\ ] << {Expr!block!brack!var!new0!new!newAnonObj!newAnon0!newAnon
                      !self!superSend!superSendNoArgs!send
                      !sendNoArgs!selfSend!getElt
                      !sendLit!selfSendLit!newLit!prefixPlus
