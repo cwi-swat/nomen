@@ -67,18 +67,19 @@ syntax Trailing
 syntax Stm
   = empty: ";"
   | expr: Expr ";" 
-  | decl: "var" Id ";"  // sugar
-  | declInit: "var" Id "=" Stm  
+  | decl: "var" VId ";"  // sugar
+  | declInit: "var" VId "=" Expr ";"  
   | ifThenElse: "if" Expr "then" Body "else" Body "end"
   | ifThen: "if" Expr "then" Body "end"
   | whileDo: "while" Expr "do" Body "end"
-  | doWhile: "do" Body "while" Stm
+  | doWhile: "do" Body "while" Expr ";"
   | forIn: "for" {ForBind ","}+ "do" Body "end"
   | tryCatch: "try" Body Catch+ "end"
   | tryFinally: "try" Body "finally" Body "end"
   | tryCatchFinally: "try" Body Catch+ "finally" Body "end"
   | caseOf: "case" Expr "of" Case* Default? "end"
-  | retExpr: "return" Stm 
+  | retNil: "return" ";"
+  | retExpr: "return" Expr ";" 
   
   // calls with trailing stm
   // whitespace required, after Id, because otherwise f(x){} can be f((x){}) or (f(x)){}
@@ -89,11 +90,11 @@ syntax Stm
   | Expr "." Id >> [(] "(" {Expr ","}* ")" Trailing
   | Id >> [(] "(" {Expr ","}* ")" Trailing
   
-  // args but no parents, and trailing.
+  // args but no parens, and trailing.
   | noParens: Expr "." Id >> [:] ":" {Expr ","}+ Trailing  
   | noParensSelf: Id >> [:] ":" {Expr ","}+ Trailing
 
-  // args but no parents, and no trailing.
+  // args but no parens, and no trailing.
   | noParensNoTrailing: Expr "." Id >> [:] ":" {Expr ","}+ ";"  
   | noParensSelfNoTrailing: Id >> [:] ":" {Expr ","}+ ";"
   ; 
@@ -142,8 +143,12 @@ syntax KeyVal
   | exp: Expr "=\>" Expr
   ;
   
+syntax VId
+  = @category="Variable" Id
+  ;
+  
 syntax Expr
-  = var: Id
+  = var: VId
   | field: FId
   | lit: Lit
   | block: Block
@@ -173,28 +178,6 @@ syntax Expr
   > sendNoArgs: Expr "." Id // sugar
   | send: Expr "." Id >> [(] "(" {Expr ","}* ")"
   | selfSend: Id >> [(] "(" {Expr ","}* ")" // sugar
-  ////todo make this a more than one list, so that a single lit
-  //// is interpreted as trailing statement (and then in statement
-  //// allow it to be a single lit.)
-  //// and think about precedne a "b" + b "c" reads weird? 
-  //| sendLit: Expr "." Id [\t\n\ ] << {Expr!block!brack!var!new0!new!newAnonObj!newAnon0!newAnon
-  //                   !self!superSend!superSendNoArgs!send
-  //                   !sendNoArgs!selfSend!getElt
-  //                   !sendLit!selfSendLit!newLit!prefixPlus
-  //                   !prefixMin!prefixBang!prefixTilde
-  //                   !star!slash!percent!plus!min!ggt
-  //                   !llt!gt!geq!lt!leq!eq!neq!tilde!amp
-  //                   !hat!pipe!and!or!cond!infix!fieldAssign
-  //                   !varAssign!setElt!setAttr ","}+ 
-  //| selfSendLit: Id [\t\n\ ] << {Expr!block!brack!var!new0!new!newAnonObj!newAnon0!newAnon
-  //                   !self!superSend!superSendNoArgs!send
-  //                   !sendNoArgs!selfSend!getElt
-  //                   !sendLit!selfSendLit!newLit!prefixPlus
-  //                   !prefixMin!prefixBang!prefixTilde
-  //                   !star!slash!percent!plus!min!ggt
-  //                   !llt!gt!geq!lt!leq!eq!neq!tilde!amp
-  //                   !hat!pipe!and!or!cond!infix!fieldAssign
-  //                   !varAssign!setElt!setAttr ","}+
   > left (
     star: Expr "*" Expr 
   | slash: Expr [a-zA-Z0-9_\>] !<< "/" Expr
