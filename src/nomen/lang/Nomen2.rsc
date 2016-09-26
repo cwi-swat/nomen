@@ -26,7 +26,7 @@ syntax Extends
 
 syntax Member
 // we need the colon otherwise can be amb with closure
-  = "def" DId "(" {Id ","}* ")" ":" Body 
+  = "def" DId "(" {VId ","}* ")" ":" Body 
   | "def" DId ":" Body // sugar
   //| "redef" DId "(" {Id ","}* ")" ":" Body 
   //| "redef" DId ":" Body // sugar
@@ -43,11 +43,11 @@ end
 */  
   
 syntax ForBind
-  = Id "in" Expr
+  = VId "in" Expr
   ;  
   
 syntax Catch
-  = "catch" CId class Id var ":" Body 
+  = "catch" CId class VId var ":" Body 
   ;
   
 syntax Case
@@ -134,7 +134,7 @@ syntax Body
 
 syntax Block
   = block0: "{" Body "}" // sugar
-  | block: "(" { Id ","}* params ")" "{" Body body "}" 
+  | block: "(" { VId ","}* params ")" "{" Body body "}" 
   ;
   
   
